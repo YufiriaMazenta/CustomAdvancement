@@ -1,0 +1,6 @@
+display:
+  icon: 'minecraft:milk'
+  title: '&6实例成就'
+  description: '&7这是一个示例成就'
+  hidden: false
+  frame: task

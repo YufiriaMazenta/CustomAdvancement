@@ -1,0 +1,8 @@
+name: CustomAdvancement
+version: '${version}'
+main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
+api-version: 1.12
+load: STARTUP
+depend: [ ParettiaLib ]
+authors: [ YufiriaMazenta ]
+folia-supported: true

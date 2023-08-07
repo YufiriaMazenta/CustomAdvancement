@@ -1,0 +1,4 @@
+prefix: '&8[&3Custom&bAdvancement&8]&r'
+advancement:
+  load_failed:
+    invalid_key: '%prefix% 无效的成就键名，具体请查看报错'
