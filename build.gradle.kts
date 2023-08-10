@@ -1,8 +1,11 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.kotlin.dsl.execution.Program
 import java.text.SimpleDateFormat
 
 plugins {
     `java-library`
     `maven-publish`
+    id("com.github.johnrengelman.shadow").version("7.1.2")
 }
 
 repositories {
@@ -25,7 +28,7 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.github.YufiriaMazenta:ParettiaLib:fbf9becccc")
+    implementation("com.github.YufiriaMazenta:CrypticLib:66015bed4f")
     compileOnly("me.clip:placeholderapi:2.11.1")
 }
 
@@ -33,6 +36,13 @@ group = "com.github.yufiriamazenta"
 version = "1.0.0-dev1"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
+
+tasks.withType<ShadowJar> {
+    relocate("crypticlib", "com.github.yufiriamazenta.crypticlib")
+    dependencies {
+        include(dependency("com.github.YufiriaMazenta:CrypticLib:66015bed4f"))
+    }
+}
 
 publishing {
     publications.create<MavenPublication>("maven") {

@@ -1,9 +1,12 @@
 package com.github.yufiriamazenta.customadvancement;
 
-import com.github.yufiriamazenta.lib.config.impl.YamlConfigWrapper;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.github.yufiriamazenta.customadvancement.cmd.CustomAdvancementCmd;
+import crypticlib.BukkitPlugin;
+import crypticlib.config.impl.YamlConfigWrapper;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 
-public final class CustomAdvancement extends JavaPlugin {
+public final class CustomAdvancement extends BukkitPlugin {
 
     private static CustomAdvancement INSTANCE;
     private YamlConfigWrapper langFile;
@@ -11,12 +14,18 @@ public final class CustomAdvancement extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+        saveDefaultConfig();
         loadLangFile();
+        AdvancementManager.loadAdvancements();
+        Bukkit.getPluginCommand("customadvancement").setExecutor(CustomAdvancementCmd.INSTANCE);
+        Bukkit.getPluginCommand("customadvancement").setTabCompleter(CustomAdvancementCmd.INSTANCE);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for (NamespacedKey advancement : AdvancementManager.getAdvancementList()) {
+            Bukkit.getUnsafe().removeAdvancement(advancement);
+        }
     }
 
     private void loadLangFile() {

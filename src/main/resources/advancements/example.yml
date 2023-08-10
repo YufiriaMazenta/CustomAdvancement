@@ -1,6 +1,9 @@
 display:
-  icon: 'minecraft:milk'
+  icon: 'minecraft:iron_ingot'
   title: '&6实例成就'
-  description: '&7这是一个示例成就'
+  description: '&7这是一个示例进度'
   hidden: false
-  frame: task
+  frame: goal
+  show_toast: true
+  background: 'minecraft:textures/block/ice.png'
+  announce_to_chat: true

@@ -1,8 +1,17 @@
 name: CustomAdvancement
 version: '${version}'
 main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
-api-version: 1.12
+api-version: 1.13
 load: STARTUP
 depend: [ ParettiaLib ]
 authors: [ YufiriaMazenta ]
 folia-supported: true
+commands:
+  customadvancement:
+    aliases:
+      - customadv
+    permission: customadvancement.command
+permissions:
+  customadvancement.command:
+    default: op
+prefix: ''
