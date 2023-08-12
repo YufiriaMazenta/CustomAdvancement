@@ -3,7 +3,6 @@ version: '${version}'
 main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
 api-version: 1.13
 load: STARTUP
-depend: [ ParettiaLib ]
 authors: [ YufiriaMazenta ]
 folia-supported: true
 commands:
@@ -14,4 +13,3 @@ commands:
 permissions:
   customadvancement.command:
     default: op
-prefix: ''

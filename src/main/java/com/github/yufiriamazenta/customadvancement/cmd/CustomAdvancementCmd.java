@@ -1,6 +1,8 @@
 package com.github.yufiriamazenta.customadvancement.cmd;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.github.yufiriamazenta.customadvancement.cmd.sub.ReloadCommand;
+import crypticlib.annotations.BukkitCommand;
 import crypticlib.command.IPluginCommand;
 import crypticlib.command.ISubCommand;
 import org.bukkit.plugin.Plugin;
@@ -9,13 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum CustomAdvancementCmd implements IPluginCommand {
+@BukkitCommand(command = "customadvancement")
+public class CustomAdvancementCmd implements IPluginCommand {
 
-    INSTANCE;
     private final Map<String, ISubCommand> subCommandMap;
 
-    CustomAdvancementCmd() {
+    public CustomAdvancementCmd() {
         subCommandMap = new ConcurrentHashMap<>();
+        regSubCommand(ReloadCommand.INSTANCE);
     }
 
     @Override
@@ -27,4 +30,5 @@ public enum CustomAdvancementCmd implements IPluginCommand {
     public @NotNull Map<String, ISubCommand> getSubCommands() {
         return subCommandMap;
     }
+
 }

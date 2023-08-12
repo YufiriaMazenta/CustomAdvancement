@@ -1,4 +1,6 @@
 prefix: '&8[&3Custom&bAdvancement&8]&r'
 advancement:
   load_failed:
-    invalid_key: '%prefix% 无效的成就键名，具体请查看报错'
+    invalid_key: '%prefix% &c无效的成就键名，具体请查看报错'
+command:
+  reload_success: '%prefix% &b插件重载完毕'

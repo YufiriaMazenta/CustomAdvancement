@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,11 +31,14 @@ public class AdvancementManager {
         try {
             namespacedKey = new NamespacedKey(CustomAdvancement.getInstance(), id);
         } catch (IllegalArgumentException e) {
+            Map<String, String> map = new HashMap<>();
+            map.put("%prefix%", CustomAdvancement.getInstance().getPrefix());
             MsgUtil.info(
                     CustomAdvancement.getInstance().getLangFile().getConfig().getString("advancement.load_failed.invalid_key", "advancement.load_failed.invalid_key"),
-                    Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
+                    map);
             throw new RuntimeException(e);
         }
+        advancementList.add(namespacedKey);
         JsonObject rootJson = new JsonObject();
         if (config.getString("parent") != null) {
             rootJson.addProperty("parent", config.getString("parent"));
@@ -49,7 +53,7 @@ public class AdvancementManager {
         displayJson.addProperty("description", MsgUtil.color(config.getString("display.description", id)));
         displayJson.addProperty("hidden", config.getBoolean("display.hidden", false));
         displayJson.addProperty("frame", config.getString("display.frame", "task"));
-        if (config.getString("display.background") == null)
+        if (config.getString("display.background") != null)
             displayJson.addProperty("background", config.getString("display.background", "minecraft:textures/gui/advancements/backgrounds/stone.png"));
         displayJson.addProperty("show_toast", config.getBoolean("display.show_toast", true));
         displayJson.addProperty("announce_to_chat", config.getBoolean("display.announce_to_chat", true));
@@ -70,7 +74,6 @@ public class AdvancementManager {
         rootJson.add("requirements", requirementsJsonArr);
 
         String advancementJsonStr = rootJson.toString();
-        advancementList.add(namespacedKey);
         return Bukkit.getUnsafe().loadAdvancement(namespacedKey, advancementJsonStr);
     }
 
@@ -93,12 +96,26 @@ public class AdvancementManager {
             key = key.substring(0, lastDotIndex);
             try {
                 YamlConfigWrapper advancementConfig = new YamlConfigWrapper(advancementFile);
-                loadFromConfig(key, advancementConfig.getConfig());
                 advancementsConfigMap.put(key, advancementConfig);
+                loadFromConfig(key, advancementConfig.getConfig());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void disableAdvancements() {
+        for (NamespacedKey advancement : AdvancementManager.getAdvancementList()) {
+            Bukkit.getUnsafe().removeAdvancement(advancement);
+        }
+    }
+
+    public static void reloadAdvancements() {
+        disableAdvancements();
+        advancementsConfigMap.clear();
+        advancementList.clear();
+        Bukkit.reloadData();
+        loadAdvancements();
     }
 
     public static Map<String, YamlConfigWrapper> getAdvancementsConfigMap() {
