@@ -8,9 +8,11 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.critereon.CriterionTriggerKilled;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.resources.MinecraftKey;
+import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -83,6 +85,8 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         Map<MinecraftKey, Advancement.SerializedAdvancement> map = new HashMap<>();
         map.put(new MinecraftKey("test", "test"), advancement);
         ((CraftServer) Bukkit.getServer()).getServer().az().c.a(map);
+        EntityPlayer entityPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+        entityPlayer.M().b(entityPlayer);
     }
 
     private void loadLangFile() {
