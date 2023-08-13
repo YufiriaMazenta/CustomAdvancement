@@ -24,7 +24,7 @@ public enum ReloadCommand implements ISubCommand {
         if (CustomAdvancement.getInstance().getPlatform().getPlatform().equals(IPlatform.Platform.FOLIA)) {
             MsgUtil.info("&cUnable to reload advancements on the folia server, you need to restart the server to reload advancements");
         } else {
-            AdvancementManager.reloadAdvancements();
+//            AdvancementManager.reloadAdvancements();
         }
         MsgUtil.info(CustomAdvancement.getInstance().getConfig().getString("command.reload_success", "command.reload_success"));
         return true;

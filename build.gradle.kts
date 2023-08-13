@@ -17,6 +17,7 @@ repositories {
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://repo.rosewooddev.io/repository/public/")//提供spigot
+    maven("https://libraries.minecraft.net")
     mavenCentral()
 }
 
@@ -29,6 +30,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("org.spigotmc:spigot:1.20")
+    compileOnly("com.mojang:brigadier:1.0.18")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.1")
 }
 

@@ -1,31 +1,88 @@
 package com.github.yufiriamazenta.customadvancement;
 
-import com.github.yufiriamazenta.customadvancement.cmd.CustomAdvancementCmd;
 import crypticlib.BukkitPlugin;
 import crypticlib.config.impl.YamlConfigWrapper;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementFrameType;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.critereon.CriterionTriggerKilled;
+import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.resources.MinecraftKey;
+import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-public final class CustomAdvancement extends BukkitPlugin {
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+public final class CustomAdvancement extends BukkitPlugin implements Listener {
 
     private static CustomAdvancement INSTANCE;
     private YamlConfigWrapper langFile;
+    private AdvancementManager advancementManager;
 
     @Override
-    public void onEnable() {
+    public void enable() {
         INSTANCE = this;
         saveDefaultConfig();
         loadLangFile();
-        AdvancementManager.loadAdvancements();
-        Bukkit.getPluginCommand("customadvancement").setExecutor(CustomAdvancementCmd.INSTANCE);
-        Bukkit.getPluginCommand("customadvancement").setTabCompleter(CustomAdvancementCmd.INSTANCE);
+//        AdvancementManager.loadAdvancements();
+        addTest();
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @Override
-    public void onDisable() {
-        for (NamespacedKey advancement : AdvancementManager.getAdvancementList()) {
-            Bukkit.getUnsafe().removeAdvancement(advancement);
-        }
+    public void disable() {
+//        AdvancementManager.disableAdvancements();
+    }
+
+    public void addTest() {
+        Advancement.SerializedAdvancement advancement = Advancement.SerializedAdvancement.a().a(
+                        Items.A,
+                        IChatBaseComponent.a("test"),
+                        IChatBaseComponent.a("test"),
+                        new MinecraftKey("textures/gui/advancements/backgrounds/adventure.png"),
+                        AdvancementFrameType.a,
+                        true,
+                        true,
+                        false
+                ).a(AdvancementRequirements.a)
+                .a("killed_something", CriterionTriggerKilled.a.c())
+                .a("killed_by_something", CriterionTriggerKilled.a.e());
+        Map<MinecraftKey, Advancement.SerializedAdvancement> map = new HashMap<>();
+        map.put(new MinecraftKey("test", "test"), advancement);
+        ((CraftServer) Bukkit.getServer()).getServer().az().c.a(map);
+    }
+
+    @EventHandler
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+        if (event.isSneaking())
+            return;
+        //删除进度
+        HashSet<MinecraftKey> minecraftKeys = new HashSet<>();
+        minecraftKeys.add(new MinecraftKey("test", "test"));
+        ((CraftServer) Bukkit.getServer()).getServer().az().c.a(minecraftKeys);
+
+        //添加进度
+        Advancement.SerializedAdvancement advancement = Advancement.SerializedAdvancement.a().a(
+                        Items.A,
+                        IChatBaseComponent.a("test2"),
+                        IChatBaseComponent.a("test2"),
+                        new MinecraftKey("textures/gui/advancements/backgrounds/adventure.png"),
+                        AdvancementFrameType.a,
+                        true,
+                        true,
+                        false
+                ).a(AdvancementRequirements.a)
+                .a("killed_something", CriterionTriggerKilled.a.c())
+                .a("killed_by_something", CriterionTriggerKilled.a.e());
+        Map<MinecraftKey, Advancement.SerializedAdvancement> map = new HashMap<>();
+        map.put(new MinecraftKey("test", "test"), advancement);
+        ((CraftServer) Bukkit.getServer()).getServer().az().c.a(map);
     }
 
     private void loadLangFile() {
