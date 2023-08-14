@@ -1,6 +1,6 @@
 package com.github.yufiriamazenta.customadvancement.cmd.sub;
 
-import com.github.yufiriamazenta.customadvancement.AdvancementManager;
+import com.github.yufiriamazenta.customadvancement.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import crypticlib.command.ISubCommand;
 import crypticlib.platform.IPlatform;
@@ -21,12 +21,12 @@ public enum ReloadCommand implements ISubCommand {
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
         CustomAdvancement.getInstance().reloadConfig();
-        if (CustomAdvancement.getInstance().getPlatform().getPlatform().equals(IPlatform.Platform.FOLIA)) {
-            MsgUtil.info("&cUnable to reload advancements on the folia server, you need to restart the server to reload advancements");
-        } else {
-//            AdvancementManager.reloadAdvancements();
-        }
-        MsgUtil.info(CustomAdvancement.getInstance().getConfig().getString("command.reload_success", "command.reload_success"));
+        AdvancementLoader.INSTANCE.reloadAdvancements();
+        MsgUtil.sendLang(
+                sender,
+                CustomAdvancement.getInstance().getLangFile().getConfig(),
+                "command.reload_success",
+                Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
         return true;
     }
 

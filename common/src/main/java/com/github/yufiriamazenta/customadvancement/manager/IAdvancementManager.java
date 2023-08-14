@@ -1,23 +1,32 @@
-package com.github.yufiriamazenta.customadvancement;
+package com.github.yufiriamazenta.customadvancement.manager;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.critereon.LootDeserializationContext;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public interface IAdvancementManager {
 
-    void loadAdvancement(MinecraftKey key, Advancement.SerializedAdvancement advancement);
+    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements);
 
-    default void loadAdvancement(String namespace, String key, Advancement.SerializedAdvancement advancement) {
-        loadAdvancement(new MinecraftKey(namespace, key.toLowerCase()), advancement);
+    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
+        loadAdvancements(Map.of(key, advancement));
     }
 
-    default void loadAdvancement(String key, Advancement.SerializedAdvancement advancement) {
-        loadAdvancement("customadvancemnt", key, advancement);
+    default void loadAdvancement(String namespace, String key, Advancement.Builder advancement) {
+        loadAdvancement(new ResourceLocation(namespace, key.toLowerCase()), advancement);
+    }
+
+    default void loadAdvancement(String key, Advancement.Builder advancement) {
+        loadAdvancement("custom_advancement", key, advancement);
     }
 
     default void loadAdvancement(String key, ConfigurationSection config) {
@@ -54,14 +63,29 @@ public interface IAdvancementManager {
         impJsonArr.add("imp");
         requirementsJsonArr.add(impJsonArr);
         rootJson.add("requirements", requirementsJsonArr);
-        Advancement.SerializedAdvancement advancement = Advancement.SerializedAdvancement.a(rootJson, null);
+        Advancement.Builder advancement = Advancement.Builder.fromJson(rootJson, null);
         loadAdvancement(key, advancement);
     }
 
-    void removeAdvancement(MinecraftKey key);
+    void removeAdvancements(Set<ResourceLocation> keySet, boolean reload);
 
-    default void removeAdvancement(String namespace, String key) {
-        removeAdvancement(new MinecraftKey(namespace, key));
+    default void removeAdvancement(ResourceLocation key, boolean reload) {
+        removeAdvancements(Set.of(key), reload);
+    }
+
+    default void removeAdvancement(String namespace, String key, boolean reload) {
+        removeAdvancement(new ResourceLocation(namespace, key), reload);
+    }
+
+    default void removeAdvancement(String key, boolean reload) {
+        removeAdvancement("custom_advancement", key, reload);
+    }
+
+    default void reloadAdvancements() {
+        for (ServerPlayer player : MinecraftServer.getServer().getPlayerList().players) {
+            player.getAdvancements().save();
+            player.getAdvancements().reload(MinecraftServer.getServer().getAdvancements());
+        }
     }
 
 }

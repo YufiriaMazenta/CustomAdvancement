@@ -1,6 +1,6 @@
 display:
   icon: 'minecraft:iron_ingot'
-  title: '&6实例成就'
+  title: '&6示例进度'
   description: '&7这是一个示例进度'
   hidden: false
   frame: goal
