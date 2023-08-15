@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -16,6 +14,14 @@ import java.util.Set;
 public interface IAdvancementManager {
 
     void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements);
+
+    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap) {
+        Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
+        for (ResourceLocation key : advancementsJsonMap.keySet()) {
+            advancements.put(key, json2Advancement(advancementsJsonMap.get(key)));
+        }
+        loadAdvancements(advancements);
+    }
 
     default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
         loadAdvancements(Map.of(key, advancement));
@@ -29,7 +35,34 @@ public interface IAdvancementManager {
         loadAdvancement("custom_advancement", key, advancement);
     }
 
+    default void loadAdvancementJson(String key, JsonObject advancementJson) {
+        loadAdvancement(key, json2Advancement(advancementJson));
+    }
+
     default void loadAdvancement(String key, ConfigurationSection config) {
+        JsonObject advancementJson = config2Json(config);
+        loadAdvancementJson(key, advancementJson);
+    }
+
+    void removeAdvancements(Set<ResourceLocation> keySet, boolean reload);
+
+    default void removeAdvancement(ResourceLocation key, boolean reload) {
+        removeAdvancements(Set.of(key), reload);
+    }
+
+    default void removeAdvancement(String namespace, String key, boolean reload) {
+        removeAdvancement(new ResourceLocation(namespace, key), reload);
+    }
+
+    default void removeAdvancement(String key, boolean reload) {
+        removeAdvancement("custom_advancement", key, reload);
+    }
+
+    void reloadAdvancements();
+
+    Advancement.Builder json2Advancement(JsonObject advancementJson);
+
+    default JsonObject config2Json(ConfigurationSection config) {
         JsonObject rootJson = new JsonObject();
         if (config.getString("parent") != null) {
             rootJson.addProperty("parent", config.getString("parent"));
@@ -40,8 +73,8 @@ public interface IAdvancementManager {
         JsonObject iconJson = new JsonObject();
         iconJson.addProperty("item", config.getString("display.icon"));
         displayJson.add("icon", iconJson);
-        displayJson.addProperty("title", MsgUtil.color(config.getString("display.title", key)));
-        displayJson.addProperty("description", MsgUtil.color(config.getString("display.description", key)));
+        displayJson.addProperty("title", MsgUtil.color(config.getString("display.title", "Unset title")));
+        displayJson.addProperty("description", MsgUtil.color(config.getString("display.description", "Unset description")));
         displayJson.addProperty("hidden", config.getBoolean("display.hidden", false));
         displayJson.addProperty("frame", config.getString("display.frame", "task"));
         if (config.getString("display.background") != null)
@@ -63,29 +96,7 @@ public interface IAdvancementManager {
         impJsonArr.add("imp");
         requirementsJsonArr.add(impJsonArr);
         rootJson.add("requirements", requirementsJsonArr);
-        Advancement.Builder advancement = Advancement.Builder.fromJson(rootJson, null);
-        loadAdvancement(key, advancement);
-    }
-
-    void removeAdvancements(Set<ResourceLocation> keySet, boolean reload);
-
-    default void removeAdvancement(ResourceLocation key, boolean reload) {
-        removeAdvancements(Set.of(key), reload);
-    }
-
-    default void removeAdvancement(String namespace, String key, boolean reload) {
-        removeAdvancement(new ResourceLocation(namespace, key), reload);
-    }
-
-    default void removeAdvancement(String key, boolean reload) {
-        removeAdvancement("custom_advancement", key, reload);
-    }
-
-    default void reloadAdvancements() {
-        for (ServerPlayer player : MinecraftServer.getServer().getPlayerList().players) {
-            player.getAdvancements().save();
-            player.getAdvancements().reload(MinecraftServer.getServer().getAdvancements());
-        }
+        return rootJson;
     }
 
 }

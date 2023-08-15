@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.Set;
 
-public class V1_20_R1AdvancementManager implements IAdvancementManager {
+public class V1_18_R1AdvancementManager implements IAdvancementManager {
 
     @Override
     public void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements) {

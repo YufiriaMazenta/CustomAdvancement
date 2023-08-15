@@ -1,7 +1,6 @@
 package com.github.yufiriamazenta.customadvancement;
 
-import com.github.yufiriamazenta.customadvancement.manager.impl.V1_19_R3AdvancementManager;
-import com.github.yufiriamazenta.customadvancement.manager.impl.V1_20_R1AdvancementManager;
+import com.github.yufiriamazenta.customadvancement.manager.impl.*;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
 import crypticlib.BukkitPlugin;
 import crypticlib.config.impl.YamlConfigWrapper;
@@ -30,6 +29,11 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         advancementManager = switch (getNmsVersion()) {
             case "v1_20_R1" -> new V1_20_R1AdvancementManager();
             case "v1_19_R3" -> new V1_19_R3AdvancementManager();
+            case "v1_19_R2" -> new V1_19_R2AdvancementManager();
+            case "v1_19_R1" -> new V1_19_R1AdvancementManager();
+            case "v1_18_R2" -> new V1_18_R2AdvancementManager();
+            case "v1_18_R1" -> new V1_18_R1AdvancementManager();
+            case "v1_17_R1" -> new V1_17_R1AdvancementManager();
             default -> throw new RuntimeException("Run on an unsupported version");
         };
     }

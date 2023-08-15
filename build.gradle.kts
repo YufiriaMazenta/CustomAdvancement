@@ -32,10 +32,15 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":v1_20_R1"))
     implementation(project(":v1_19_R3"))
+    implementation(project(":v1_19_R2"))
+    implementation(project(":v1_19_R1"))
+    implementation(project(":v1_18_R2"))
+    implementation(project(":v1_18_R1"))
+    implementation(project(":v1_17_R1"))
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev2"
+version = "1.0.0-dev3"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
