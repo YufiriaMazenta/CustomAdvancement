@@ -6,6 +6,7 @@ import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,18 @@ public interface IAdvancementManager {
     }
 
     void reloadAdvancements();
+
+    boolean grantAdvancement(Player player, ResourceLocation key);
+
+    default boolean grantAdvancement(Player player, String key) {
+        return grantAdvancement(player, new ResourceLocation("custom_advancement", key));
+    }
+
+    boolean revokeAdvancement(Player player, ResourceLocation key);
+
+    default boolean revokeAdvancement(Player player, String key) {
+        return revokeAdvancement(player, new ResourceLocation("custom_advancement", key));
+    }
 
     Advancement.Builder json2Advancement(JsonObject advancementJson);
 

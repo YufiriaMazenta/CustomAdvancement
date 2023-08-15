@@ -9,7 +9,15 @@ commands:
   customadvancement:
     aliases:
       - customadv
-    permission: customadvancement.command
+      - cadv
+    permission: custom_advancement.command
 permissions:
-  customadvancement.command:
+  custom_advancement.command:
     default: op
+    children:
+      custom_advancement.command.reload:
+        default: op
+      custom_advancement.command.grant:
+        default: op
+      custom_advancement.command.revoke:
+        default: op

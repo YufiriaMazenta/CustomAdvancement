@@ -3,4 +3,11 @@ advancement:
   load_failed:
     invalid_key: '%prefix% &c无效的成就键名，具体请查看报错'
 command:
+  missing_parameters: '%prefix% &c缺少参数'
   reload_success: '%prefix% &b插件重载完毕'
+  grant_failed_offline_player: '%prefix% &c玩家不在线'
+  grant_failed_not_exist_advancement: '%prefix% &c不存在的进度'
+  grant_success: '%prefix% &7已成功授予玩家%player%进度'
+  revoke_failed_offline_player: '%prefix% &c玩家不在线'
+  revoke_failed_not_exist_advancement: '%prefix% &c不存在的进度'
+  revoke_success: '%prefix% &7已成功撤销玩家%player%进度'

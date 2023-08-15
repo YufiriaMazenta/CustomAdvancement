@@ -1,7 +1,9 @@
 package com.github.yufiriamazenta.customadvancement.cmd;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.github.yufiriamazenta.customadvancement.cmd.sub.GrantCommand;
 import com.github.yufiriamazenta.customadvancement.cmd.sub.ReloadCommand;
+import com.github.yufiriamazenta.customadvancement.cmd.sub.RevokeCommand;
 import crypticlib.annotations.BukkitCommand;
 import crypticlib.command.IPluginCommand;
 import crypticlib.command.ISubCommand;
@@ -19,6 +21,8 @@ public class CustomAdvancementCmd implements IPluginCommand {
     public CustomAdvancementCmd() {
         subCommandMap = new ConcurrentHashMap<>();
         regSubCommand(ReloadCommand.INSTANCE);
+        regSubCommand(GrantCommand.INSTANCE);
+        regSubCommand(RevokeCommand.INSTANCE);
     }
 
     @Override

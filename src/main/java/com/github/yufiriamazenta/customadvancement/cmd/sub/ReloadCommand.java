@@ -21,6 +21,7 @@ public enum ReloadCommand implements ISubCommand {
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
         CustomAdvancement.getInstance().reloadConfig();
+        CustomAdvancement.getInstance().getLangFile().reloadConfig();
         AdvancementLoader.INSTANCE.reloadAdvancements();
         MsgUtil.sendLang(
                 sender,
@@ -37,7 +38,7 @@ public enum ReloadCommand implements ISubCommand {
 
     @Override
     public String getPerm() {
-        return "customadvancement.command.reload";
+        return "custom_advancement.command.reload";
     }
 
     @Override
