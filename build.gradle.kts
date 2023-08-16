@@ -29,18 +29,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.1")
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.1")
-    implementation(project(":common"))
-    implementation(project(":v1_20_R1"))
-    implementation(project(":v1_19_R3"))
-    implementation(project(":v1_19_R2"))
-    implementation(project(":v1_19_R1"))
-    implementation(project(":v1_18_R2"))
-    implementation(project(":v1_18_R1"))
-    implementation(project(":v1_17_R1"))
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev4"
+version = "1.0.0-dev5"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
