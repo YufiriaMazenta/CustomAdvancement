@@ -1,5 +1,6 @@
 package com.github.yufiriamazenta.customadvancement.manager;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import crypticlib.util.MsgUtil;
@@ -7,10 +8,9 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.yaml.snakeyaml.Yaml;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface IAdvancementManager {
 
@@ -96,20 +96,35 @@ public interface IAdvancementManager {
         displayJson.addProperty("announce_to_chat", config.getBoolean("display.announce_to_chat", true));
         rootJson.add("display", displayJson);
 
+        Gson gson = new Gson();
         //准则列表json
-        JsonObject criteriaJson = new JsonObject();
-        JsonObject impJson = new JsonObject();
-        impJson.addProperty("trigger", "minecraft:impossible");
-        criteriaJson.add("imp", impJson);
-        rootJson.add("criteria", criteriaJson);
+        ConfigurationSection criteria = config.getConfigurationSection("criteria");
+        if (criteria != null) {
+            JsonObject criteriaJson = gson.fromJson(gson.toJson(configSection2Map(criteria)), JsonObject.class);
+            rootJson.add("criteria", criteriaJson);
+        }
 
         //需要完成的准则列表
-        JsonArray requirementsJsonArr = new JsonArray();
-        JsonArray impJsonArr = new JsonArray();
-        impJsonArr.add("imp");
-        requirementsJsonArr.add(impJsonArr);
-        rootJson.add("requirements", requirementsJsonArr);
+        List<?> requirements = config.getList("requirements");
+        if (requirements != null && requirements.size() >= 1) {
+            JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(requirements), JsonArray.class);
+            rootJson.add("requirements", requirementsJsonArr);
+        }
+
+        MsgUtil.info(rootJson.toString());
         return rootJson;
+    }
+
+    default Map<String, Object> configSection2Map(ConfigurationSection configSection) {
+        Map<String, Object> map = new HashMap<>();
+        for (String key : configSection.getKeys(false)) {
+            if (configSection.isConfigurationSection(key)) {
+                map.put(key, configSection2Map(configSection.getConfigurationSection(key)));
+            } else {
+                map.put(key, configSection.get(key));
+            }
+        }
+        return map;
     }
 
 }

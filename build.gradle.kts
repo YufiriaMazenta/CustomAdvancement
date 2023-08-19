@@ -32,7 +32,7 @@ dependencies {
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev5"
+version = "1.0.0-dev6"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -59,7 +59,7 @@ tasks.withType(JavaCompile::class.java) {
 tasks {
     val props = HashMap<String, String>()
     props["version"] = pluginVersion
-    "processResources"(ProcessResources::class) {
+    processResources {
         filesMatching("plugin.yml") {
             expand(props)
         }

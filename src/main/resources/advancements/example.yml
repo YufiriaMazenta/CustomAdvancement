@@ -7,3 +7,10 @@ display:
   show_toast: true
   background: 'minecraft:textures/block/ice.png'
   announce_to_chat: true
+criteria:
+  example:
+    trigger: 'minecraft:brewed_potion'
+    conditions:
+      player:
+        location:
+          dimension: 'minecraft:the_end'
