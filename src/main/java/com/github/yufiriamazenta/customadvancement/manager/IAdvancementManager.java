@@ -111,7 +111,30 @@ public interface IAdvancementManager {
             rootJson.add("requirements", requirementsJsonArr);
         }
 
-        MsgUtil.info(rootJson.toString());
+        //需要完成的准则列表
+        ConfigurationSection rewards = config.getConfigurationSection("rewards");
+        if (rewards != null) {
+            JsonObject rewardsJson = new JsonObject();
+            if (rewards.getDouble("exp", 0) != 0) {
+                rewardsJson.addProperty("experience", rewards.getDouble("exp"));
+            }
+            if (rewards.getStringList("loot").size() >= 1) {
+                JsonArray loot = new JsonArray();
+                for (String lootName : rewards.getStringList("loot")) {
+                    loot.add(lootName);
+                }
+                rewardsJson.add("loot", loot);
+            }
+            if (rewards.getStringList("recipes").size() >= 1) {
+                JsonArray recipes = new JsonArray();
+                for (String recipeName : rewards.getStringList("recipes")) {
+                    recipes.add(recipeName);
+                }
+                rewardsJson.add("recipes", recipes);
+            }
+            rootJson.add("rewards", rewardsJson);
+        }
+
         return rootJson;
     }
 
