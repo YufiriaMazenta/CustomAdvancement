@@ -2,6 +2,7 @@ package com.github.yufiriamazenta.customadvancement.manager.impl;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
@@ -14,8 +15,11 @@ import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,12 +33,13 @@ public enum AdvancementManager implements IAdvancementManager {
     INSTANCE;
     private Map<String, Map<String, String>> methodNameMap;
     private Map<String, Map<String, String>> fieldNameMap;
-    private Method getServerMethod, getServerAdvancementsMethod, addAdvancementMethod, removeAdvancementMethod, getAdvancementMethod, getServerPlayersMethod;
+    private Method getServerMethod, getLootDataMethod, getServerAdvancementsMethod, addAdvancementMethod, removeAdvancementMethod, getAdvancementMethod, getServerPlayersMethod;
     private Method getPlayerAdvancementsMethod, savePlayerAdvancementsMethod, reloadPlayerAdvancementsMethod, getOrStartProgressMethod, awardPlayerAdvancementMethod, revokePlayerAdvancementMethod;
     private Method advancementProgressIsDoneMethod, getAdvancementProgressRemainingCriteriaMethod, advancementProgressHasProgressMethod, getAdvancementProgressCompletedCriteriaMethod;
     private Method advancementFromJsonMethod;
     private Method getPlayerHandleMethod;
     private Field serverAdvancementsField, serverPlayerListField;
+    private Constructor<?> deserializationContextConstructor;
 
     AdvancementManager() {
         initReflectionMap();
@@ -143,10 +148,13 @@ public enum AdvancementManager implements IAdvancementManager {
     }
 
     @Override
-    public Advancement.Builder json2Advancement(JsonObject advancementJson) {
+    public Advancement.Builder json2Advancement(ResourceLocation key, JsonObject advancementJson) {
         try {
-            return (Advancement.Builder) advancementFromJsonMethod.invoke(null, advancementJson, null);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
+            Object lootData = getLootDataMethod.invoke(server);
+            Object deserializationContext = deserializationContextConstructor.newInstance(key, lootData);
+            return (Advancement.Builder) advancementFromJsonMethod.invoke(null, advancementJson, deserializationContext);
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
             return null;
         }
@@ -158,6 +166,7 @@ public enum AdvancementManager implements IAdvancementManager {
         try {
             String nmsVer = CustomAdvancement.getInstance().getNmsVersion();
             getServerMethod = MinecraftServer.class.getMethod(methodNameMap.get("getServer").get(nmsVer));
+            getLootDataMethod = MinecraftServer.class.getMethod(methodNameMap.get("getLootData").get(nmsVer));
             getServerAdvancementsMethod = MinecraftServer.class.getMethod(methodNameMap.get("getAdvancements").get(nmsVer));
             addAdvancementMethod = AdvancementList.class.getMethod(methodNameMap.get("addAdvancement").get(nmsVer), Map.class);
             removeAdvancementMethod = AdvancementList.class.getMethod(methodNameMap.get("removeAdvancement").get(nmsVer), Set.class);
@@ -176,6 +185,7 @@ public enum AdvancementManager implements IAdvancementManager {
             advancementFromJsonMethod = Advancement.Builder.class.getMethod(methodNameMap.get("advancementFromJson").get(nmsVer), JsonObject.class, DeserializationContext.class);
             serverAdvancementsField = ServerAdvancementManager.class.getField(fieldNameMap.get("serverAdvancements").get(nmsVer));
             serverPlayerListField = PlayerList.class.getField(fieldNameMap.get("serverPlayerList").get(nmsVer));
+            deserializationContextConstructor = DeserializationContext.class.getConstructors()[0];
         } catch (NoSuchMethodException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -194,6 +204,16 @@ public enum AdvancementManager implements IAdvancementManager {
         getServerMethodNameMap.put("v1_19_R3", "getServer");
         getServerMethodNameMap.put("v1_20_R1", "getServer");
         methodNameMap.put("getServer", getServerMethodNameMap);
+
+        Map<String, String> getLootDataMethodNameMap = new ConcurrentHashMap<>();
+        getLootDataMethodNameMap.put("v1_17_R1", "getLootTableRegistry");
+        getLootDataMethodNameMap.put("v1_18_R1", "aG");
+        getLootDataMethodNameMap.put("v1_18_R2", "aF");
+        getLootDataMethodNameMap.put("v1_19_R1", "aH");
+        getLootDataMethodNameMap.put("v1_19_R2", "aH");
+        getLootDataMethodNameMap.put("v1_19_R3", "aH");
+        getLootDataMethodNameMap.put("v1_20_R1", "aH");
+        methodNameMap.put("getLootData", getLootDataMethodNameMap);
 
         Map<String, String> getServerAdvancementsMethodNameMap = new ConcurrentHashMap<>();
         getServerAdvancementsMethodNameMap.put("v1_17_R1", "getAdvancementData()");

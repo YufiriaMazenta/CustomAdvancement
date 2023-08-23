@@ -19,7 +19,7 @@ public interface IAdvancementManager {
     default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap) {
         Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
         for (ResourceLocation key : advancementsJsonMap.keySet()) {
-            advancements.put(key, json2Advancement(advancementsJsonMap.get(key)));
+            advancements.put(key, json2Advancement(key, advancementsJsonMap.get(key)));
         }
         loadAdvancements(advancements);
     }
@@ -37,7 +37,7 @@ public interface IAdvancementManager {
     }
 
     default void loadAdvancementJson(String key, JsonObject advancementJson) {
-        loadAdvancement(key, json2Advancement(advancementJson));
+        loadAdvancement(key, json2Advancement(new ResourceLocation("custom_advancement", key), advancementJson));
     }
 
     default void loadAdvancement(String key, ConfigurationSection config) {
@@ -73,7 +73,7 @@ public interface IAdvancementManager {
         return revokeAdvancement(player, new ResourceLocation("custom_advancement", key));
     }
 
-    Advancement.Builder json2Advancement(JsonObject advancementJson);
+    Advancement.Builder json2Advancement(ResourceLocation key, JsonObject advancementJson);
 
     default JsonObject config2Json(ConfigurationSection config) {
         JsonObject rootJson = new JsonObject();
@@ -99,15 +99,22 @@ public interface IAdvancementManager {
         Gson gson = new Gson();
         //准则列表json
         ConfigurationSection criteria = config.getConfigurationSection("criteria");
+        JsonObject criteriaJson;
         if (criteria != null) {
-            JsonObject criteriaJson = gson.fromJson(gson.toJson(configSection2Map(criteria)), JsonObject.class);
-            rootJson.add("criteria", criteriaJson);
+            criteriaJson = gson.fromJson(gson.toJson(configSection2Map(criteria)), JsonObject.class);
+        } else {
+            criteriaJson = new JsonObject();
+            JsonObject impJson = new JsonObject();
+            impJson.addProperty("trigger", "minecraft:impossible");
+            criteriaJson.add("imp", impJson);
         }
+        rootJson.add("criteria", criteriaJson);
+
 
         //需要完成的准则列表
         List<?> requirements = config.getList("requirements");
         if (requirements != null && requirements.size() >= 1) {
-            JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(requirements), JsonArray.class);
+            JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(configList2List(requirements)), JsonArray.class);
             rootJson.add("requirements", requirementsJsonArr);
         }
 
@@ -143,11 +150,27 @@ public interface IAdvancementManager {
         for (String key : configSection.getKeys(false)) {
             if (configSection.isConfigurationSection(key)) {
                 map.put(key, configSection2Map(configSection.getConfigurationSection(key)));
+            } else if (configSection.isList(key)){
+                map.put(key, configList2List(configSection.getList(key)));
             } else {
                 map.put(key, configSection.get(key));
             }
         }
         return map;
+    }
+
+    default List<Object> configList2List(List<?> origin) {
+        List<Object> list = new ArrayList<>();
+        for (Object o : origin) {
+            if (o instanceof ConfigurationSection) {
+                list.add(configSection2Map((ConfigurationSection) o));
+            } else if (o instanceof List<?>) {
+                list.add(configList2List((List<?>) o));
+            } else {
+                list.add(o);
+            }
+        }
+        return list;
     }
 
 }
