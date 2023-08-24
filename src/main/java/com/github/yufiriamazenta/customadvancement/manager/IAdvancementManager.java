@@ -8,7 +8,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 
@@ -26,18 +25,16 @@ public interface IAdvancementManager {
 
     default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
         loadAdvancements(Map.of(key, advancement));
+        getEditableAdvancements().add(key.toString());
     }
 
-    default void loadAdvancement(String namespace, String key, Advancement.Builder advancement) {
-        loadAdvancement(new ResourceLocation(namespace, key.toLowerCase()), advancement);
-    }
 
     default void loadAdvancement(String key, Advancement.Builder advancement) {
-        loadAdvancement("custom_advancement", key, advancement);
+        loadAdvancement(new ResourceLocation(key), advancement);;
     }
 
     default void loadAdvancementJson(String key, JsonObject advancementJson) {
-        loadAdvancement(key, json2Advancement(new ResourceLocation("custom_advancement", key), advancementJson));
+        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson));
     }
 
     default void loadAdvancement(String key, ConfigurationSection config) {
@@ -49,28 +46,25 @@ public interface IAdvancementManager {
 
     default void removeAdvancement(ResourceLocation key, boolean reload) {
         removeAdvancements(Set.of(key), reload);
-    }
-
-    default void removeAdvancement(String namespace, String key, boolean reload) {
-        removeAdvancement(new ResourceLocation(namespace, key), reload);
+        getEditableAdvancements().remove(key.toString());
     }
 
     default void removeAdvancement(String key, boolean reload) {
-        removeAdvancement("custom_advancement", key, reload);
+        removeAdvancement(new ResourceLocation(key), reload);
     }
 
-    void reloadAdvancements();
+    void reloadPlayerAdvancements();
 
     boolean grantAdvancement(Player player, ResourceLocation key);
 
     default boolean grantAdvancement(Player player, String key) {
-        return grantAdvancement(player, new ResourceLocation("custom_advancement", key));
+        return grantAdvancement(player, new ResourceLocation(key));
     }
 
     boolean revokeAdvancement(Player player, ResourceLocation key);
 
     default boolean revokeAdvancement(Player player, String key) {
-        return revokeAdvancement(player, new ResourceLocation("custom_advancement", key));
+        return revokeAdvancement(player, new ResourceLocation(key));
     }
 
     Advancement.Builder json2Advancement(ResourceLocation key, JsonObject advancementJson);
@@ -173,4 +167,7 @@ public interface IAdvancementManager {
         return list;
     }
 
+    List<String> getAdvancements();
+
+    List<String> getEditableAdvancements();
 }

@@ -1,9 +1,8 @@
 package com.github.yufiriamazenta.customadvancement.cmd.sub;
 
-import com.github.yufiriamazenta.customadvancement.AdvancementLoader;
+import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import crypticlib.command.ISubCommand;
-import crypticlib.platform.IPlatform;
 import crypticlib.util.MsgUtil;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

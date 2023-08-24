@@ -2,9 +2,7 @@ package com.github.yufiriamazenta.customadvancement.manager.impl;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.AdvancementProgress;
@@ -15,17 +13,13 @@ import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum AdvancementManager implements IAdvancementManager {
@@ -40,8 +34,10 @@ public enum AdvancementManager implements IAdvancementManager {
     private Method getPlayerHandleMethod;
     private Field serverAdvancementsField, serverPlayerListField;
     private Constructor<?> deserializationContextConstructor;
+    private final List<String> advancements;
 
     AdvancementManager() {
+        advancements = new ArrayList<>();
         initReflectionMap();
         loadMethodsAndFields();
     }
@@ -71,7 +67,7 @@ public enum AdvancementManager implements IAdvancementManager {
     }
 
     @Override
-    public void reloadAdvancements() {
+    public void reloadPlayerAdvancements() {
         try {
             MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
             PlayerList playerList = (PlayerList) getServerPlayersMethod.invoke(server);
@@ -158,6 +154,16 @@ public enum AdvancementManager implements IAdvancementManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<String> getAdvancements() {
+        return new ArrayList<>(advancements);
+    }
+
+    @Override
+    public List<String> getEditableAdvancements() {
+        return advancements;
     }
 
     //以下为内部实现专用方法
@@ -398,6 +404,5 @@ public enum AdvancementManager implements IAdvancementManager {
         serverPlayerListFieldNameMap.put("v1_20_R1", "k");
         fieldNameMap.put("serverPlayerList", serverPlayerListFieldNameMap);
     }
-
 
 }

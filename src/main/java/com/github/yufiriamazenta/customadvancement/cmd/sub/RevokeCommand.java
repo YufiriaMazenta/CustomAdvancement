@@ -1,6 +1,5 @@
 package com.github.yufiriamazenta.customadvancement.cmd.sub;
 
-import com.github.yufiriamazenta.customadvancement.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import crypticlib.command.ISubCommand;
 import crypticlib.util.MsgUtil;
@@ -69,8 +68,8 @@ public enum RevokeCommand implements ISubCommand {
             }
             playerNameList.removeIf(str -> !str.startsWith(args.get(0)));
             return playerNameList;
-        } else if (args.size() <= 2) {
-            List<String> advancements = AdvancementLoader.INSTANCE.getAdvancements();
+        } else if (args.size() == 2) {
+            List<String> advancements = new ArrayList<>(CustomAdvancement.getInstance().getAdvancementManager().getAdvancements());
             advancements.removeIf(str -> !str.startsWith(args.get(1)));
             return advancements;
         } else {

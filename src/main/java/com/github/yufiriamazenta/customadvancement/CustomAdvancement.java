@@ -1,5 +1,6 @@
 package com.github.yufiriamazenta.customadvancement;
 
+import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
 import crypticlib.BukkitPlugin;

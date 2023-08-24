@@ -1,11 +1,12 @@
-package com.github.yufiriamazenta.customadvancement;
+package com.github.yufiriamazenta.customadvancement.loader;
 
+import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import crypticlib.config.impl.YamlConfigWrapper;
 import crypticlib.util.FileUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public enum AdvancementLoader {
@@ -13,11 +14,12 @@ public enum AdvancementLoader {
     INSTANCE;
 
     private final File advancementsFolder;
-    private final List<String> advancements;
+    private final Map<String, YamlConfigWrapper> advancementConfigs;
+    private AdvancementLoadTree loadTree;
 
     AdvancementLoader() {
+        advancementConfigs = new ConcurrentHashMap<>();
         advancementsFolder = new File(CustomAdvancement.getInstance().getDataFolder(), "advancements");
-        advancements = new ArrayList<>();
     }
 
     public void loadAdvancements() {
@@ -31,36 +33,31 @@ public enum AdvancementLoader {
             CustomAdvancement.getInstance().saveResource("advancements/example.yml", false);
             allFiles.add(new File(advancementsFolder, "example.yml"));
         }
-        for (File advancementFile : allFiles) {
-            String key = advancementFile.getPath().substring(advancementsFolder.getPath().length() + 1);
+        for (File file : allFiles) {
+            String key = file.getPath().substring(advancementsFolder.getPath().length() + 1);
             key = key.replace("\\", "/");
             int lastDotIndex = key.lastIndexOf(".");
             key = key.substring(0, lastDotIndex);
-            try {
-                YamlConfigWrapper advancementConfig = new YamlConfigWrapper(advancementFile);
-                advancements.add(key);
-                CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(key, advancementConfig.getConfig());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            advancementConfigs.put("custom_advancement:" + key, new YamlConfigWrapper(file));
         }
+        loadTree = new AdvancementLoadTree(advancementConfigs);
+        loadTree.load();
     }
 
     public void unloadAdvancements() {
-        for (String advancement : advancements) {
-            CustomAdvancement.getInstance().getAdvancementManager().removeAdvancement(advancement, false);
-        }
+        loadTree.unload();
     }
 
     public void reloadAdvancements() {
         unloadAdvancements();
-        advancements.clear();
+        advancementConfigs.clear();
+        CustomAdvancement.getInstance().getAdvancementManager().getEditableAdvancements().clear();
         loadAdvancements();
-        CustomAdvancement.getInstance().getAdvancementManager().reloadAdvancements();
+        CustomAdvancement.getInstance().getAdvancementManager().reloadPlayerAdvancements();
     }
 
-    public List<String> getAdvancements() {
-        return advancements;
+    public Map<String, YamlConfigWrapper> getAdvancementConfigs() {
+        return advancementConfigs;
     }
 
 }
