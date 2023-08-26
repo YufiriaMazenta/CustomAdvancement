@@ -24,7 +24,7 @@ public final class AdvancementLoadTreeNode {
     }
 
     public void load() {
-        CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig(), false);
+        CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig());
         for (AdvancementLoadTreeNode node : childNodes.values()) {
             node.load();
         }

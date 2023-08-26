@@ -49,7 +49,7 @@ public final class AdvancementLoadTree {
 
     void unload() {
         loadNodes.forEach((nodeKey, node) -> {
-            AdvancementManager.INSTANCE.removeAdvancement(nodeKey, false);
+            AdvancementManager.INSTANCE.removeAdvancement(nodeKey);
         });
     }
 

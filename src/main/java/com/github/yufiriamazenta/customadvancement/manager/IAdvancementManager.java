@@ -16,44 +16,44 @@ import java.util.*;
 
 public interface IAdvancementManager {
 
-    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements, boolean reload);
+    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements);
 
-    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap, boolean reload) {
+    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap) {
         Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
         for (ResourceLocation key : advancementsJsonMap.keySet()) {
             advancements.put(key, json2Advancement(key, advancementsJsonMap.get(key)));
         }
-        loadAdvancements(advancements, reload);
+        loadAdvancements(advancements);
     }
 
-    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement, boolean reload) {
-        loadAdvancements(Map.of(key, advancement), reload);
+    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
+        loadAdvancements(Map.of(key, advancement));
         getEditableAdvancements().add(key.toString());
     }
 
 
-    default void loadAdvancement(String key, Advancement.Builder advancement, boolean reload) {
-        loadAdvancement(new ResourceLocation(key), advancement, reload);
+    default void loadAdvancement(String key, Advancement.Builder advancement) {
+        loadAdvancement(new ResourceLocation(key), advancement);
     }
 
-    default void loadAdvancementJson(String key, JsonObject advancementJson, boolean reload) {
-        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson), reload);
+    default void loadAdvancementJson(String key, JsonObject advancementJson) {
+        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson));
     }
 
-    default void loadAdvancement(String key, ConfigurationSection config, boolean reload) {
+    default void loadAdvancement(String key, ConfigurationSection config) {
         JsonObject advancementJson = config2Json(config);
-        loadAdvancementJson(key, advancementJson, reload);
+        loadAdvancementJson(key, advancementJson);
     }
 
-    void removeAdvancements(Set<ResourceLocation> keySet, boolean reload);
+    void removeAdvancements(Set<ResourceLocation> keySet);
 
-    default void removeAdvancement(ResourceLocation key, boolean reload) {
-        removeAdvancements(Set.of(key), reload);
+    default void removeAdvancement(ResourceLocation key) {
+        removeAdvancements(Set.of(key));
         getEditableAdvancements().remove(key.toString());
     }
 
-    default void removeAdvancement(String key, boolean reload) {
-        removeAdvancement(new ResourceLocation(key), reload);
+    default void removeAdvancement(String key) {
+        removeAdvancement(new ResourceLocation(key));
     }
 
     void reloadPlayerAdvancements();

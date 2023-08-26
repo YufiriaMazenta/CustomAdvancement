@@ -21,10 +21,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum AdvancementManager implements IAdvancementManager {
@@ -32,10 +29,10 @@ public enum AdvancementManager implements IAdvancementManager {
     INSTANCE;
     private Map<String, Map<String, String>> methodNameMap;
     private Map<String, Map<String, String>> fieldNameMap;
-    private Method getServerMethod, getLootDataMethod, getServerAdvancementsMethod, addAdvancementMethod, removeAdvancementMethod, getAdvancementMethod, getServerPlayersMethod;
+    private Method getServerMethod, getLootDataMethod, getServerAdvancementsMethod, addAdvancementMethod, removeAdvancementMethod, getAdvancementMethod, getServerPlayersMethod, getRootsAdvancementsMethod;
     private Method getPlayerAdvancementsMethod, savePlayerAdvancementsMethod, reloadPlayerAdvancementsMethod, getOrStartProgressMethod, awardPlayerAdvancementMethod, revokePlayerAdvancementMethod;
     private Method advancementProgressIsDoneMethod, getAdvancementProgressRemainingCriteriaMethod, advancementProgressHasProgressMethod, getAdvancementProgressCompletedCriteriaMethod;
-    private Method advancementFromJsonMethod;
+    private Method advancementFromJsonMethod, getDisplayMethod;
     private Method getPlayerHandleMethod;
     private Method treeNodeRunMethod;
     private Field serverAdvancementsField, serverPlayerListField;
@@ -49,30 +46,26 @@ public enum AdvancementManager implements IAdvancementManager {
     }
 
     @Override
-    public void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements, boolean reload) {
+    public void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements) {
         try {
             MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
             ServerAdvancementManager advancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
             AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(advancementManager);
             addAdvancementMethod.invoke(advancementList, advancements);
-            if (reload) {
-                AdvancementLoader.INSTANCE.reloadAdvancements();
-            }
+            reloadAdvancementTree();
+            reloadPlayerAdvancements();
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void removeAdvancements(Set<ResourceLocation> keySet, boolean reload) {
+    public void removeAdvancements(Set<ResourceLocation> keySet) {
         try {
             MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
             ServerAdvancementManager advancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
             AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(advancementManager);
             removeAdvancementMethod.invoke(advancementList, keySet);
-            if (reload) {
-                AdvancementLoader.INSTANCE.reloadAdvancements();
-            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -100,16 +93,18 @@ public enum AdvancementManager implements IAdvancementManager {
         try {
             MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
             ServerAdvancementManager serverAdvancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
-            AdvancementLoader.INSTANCE.getLoadTree().getLoadNodes().forEach((nodeKey, nodeValue) -> {
-                if (nodeValue.getParentKey() == null) {
-                    try {
-                        Advancement advancement = (Advancement) getAdvancementMethod.invoke(serverAdvancementManager, new ResourceLocation(nodeKey));
+            AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(serverAdvancementManager);
+            Iterator<Advancement> rootAdvancementIterator = ((Iterable<Advancement>) getRootsAdvancementsMethod.invoke(advancementList)).iterator();
+            while (rootAdvancementIterator.hasNext()) {
+                try {
+                    Advancement advancement = rootAdvancementIterator.next();
+                    Object display = getDisplayMethod.invoke(advancement);
+                    if (display != null)
                         treeNodeRunMethod.invoke(null, advancement);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
                 }
-            });
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -211,6 +206,7 @@ public enum AdvancementManager implements IAdvancementManager {
             removeAdvancementMethod = AdvancementList.class.getMethod(methodNameMap.get("removeAdvancement").get(nmsVer), Set.class);
             getAdvancementMethod = ServerAdvancementManager.class.getMethod(methodNameMap.get("getAdvancement").get(nmsVer), ResourceLocation.class);
             getServerPlayersMethod = MinecraftServer.class.getMethod(methodNameMap.get("getPlayers").get(nmsVer));
+            getRootsAdvancementsMethod = AdvancementList.class.getMethod(methodNameMap.get("getRoots").get(nmsVer));
             getPlayerAdvancementsMethod = ServerPlayer.class.getMethod(methodNameMap.get("getPlayerAdvancements").get(nmsVer));
             savePlayerAdvancementsMethod = PlayerAdvancements.class.getMethod(methodNameMap.get("savePlayerAdvancements").get(nmsVer));
             reloadPlayerAdvancementsMethod = PlayerAdvancements.class.getMethod(methodNameMap.get("reloadPlayerAdvancements").get(nmsVer), ServerAdvancementManager.class);
@@ -222,6 +218,7 @@ public enum AdvancementManager implements IAdvancementManager {
             advancementProgressHasProgressMethod = AdvancementProgress.class.getMethod(methodNameMap.get("advancementProgressHasProgress").get(nmsVer));
             getAdvancementProgressCompletedCriteriaMethod = AdvancementProgress.class.getMethod(methodNameMap.get("getAdvancementProgressCompletedCriteria").get(nmsVer));
             advancementFromJsonMethod = Advancement.Builder.class.getMethod(methodNameMap.get("advancementFromJson").get(nmsVer), JsonObject.class, DeserializationContext.class);
+            getDisplayMethod = Advancement.class.getMethod(methodNameMap.get("getDisplay").get(nmsVer));
             treeNodeRunMethod = TreeNodePosition.class.getMethod(methodNameMap.get("treeNodeRun").get(nmsVer), Advancement.class);
             serverAdvancementsField = ServerAdvancementManager.class.getField(fieldNameMap.get("serverAdvancements").get(nmsVer));
             serverPlayerListField = PlayerList.class.getField(fieldNameMap.get("serverPlayerList").get(nmsVer));
@@ -304,6 +301,16 @@ public enum AdvancementManager implements IAdvancementManager {
         getPlayersMethodNameMap.put("v1_19_R3", "ac");
         getPlayersMethodNameMap.put("v1_20_R1", "ac");
         methodNameMap.put("getPlayers", getPlayersMethodNameMap);
+
+        Map<String, String> getRootsAdvancementMethodNameMap = new ConcurrentHashMap<>();
+        getRootsAdvancementMethodNameMap.put("v1_17_R1", "b");
+        getRootsAdvancementMethodNameMap.put("v1_18_R1", "b");
+        getRootsAdvancementMethodNameMap.put("v1_18_R2", "b");
+        getRootsAdvancementMethodNameMap.put("v1_19_R1", "b");
+        getRootsAdvancementMethodNameMap.put("v1_19_R2", "b");
+        getRootsAdvancementMethodNameMap.put("v1_19_R3", "b");
+        getRootsAdvancementMethodNameMap.put("v1_20_R1", "b");
+        methodNameMap.put("getRoots", getRootsAdvancementMethodNameMap);
 
         Map<String, String> getPlayerAdvancementsMethodNameMap = new ConcurrentHashMap<>();
         getPlayerAdvancementsMethodNameMap.put("v1_17_R1", "getAdvancementData");
@@ -414,6 +421,16 @@ public enum AdvancementManager implements IAdvancementManager {
         advancementFromJsonMethodNameMap.put("v1_19_R3", "a");
         advancementFromJsonMethodNameMap.put("v1_20_R1", "a");
         methodNameMap.put("advancementFromJson", advancementFromJsonMethodNameMap);
+
+        Map<String, String> getDisplayMethodNameMap = new ConcurrentHashMap<>();
+        getDisplayMethodNameMap.put("v1_17_R1", "c");
+        getDisplayMethodNameMap.put("v1_18_R1", "c");
+        getDisplayMethodNameMap.put("v1_18_R2", "c");
+        getDisplayMethodNameMap.put("v1_19_R1", "c");
+        getDisplayMethodNameMap.put("v1_19_R2", "c");
+        getDisplayMethodNameMap.put("v1_19_R3", "d");
+        getDisplayMethodNameMap.put("v1_20_R1", "d");
+        methodNameMap.put("getDisplay", getDisplayMethodNameMap);
 
         Map<String, String> treeNodeRunMethodNameMap = new ConcurrentHashMap<>();
         treeNodeRunMethodNameMap.put("v1_17_R1", "a");
