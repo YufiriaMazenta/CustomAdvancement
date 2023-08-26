@@ -53,11 +53,16 @@ public enum AdvancementLoader {
         advancementConfigs.clear();
         CustomAdvancement.getInstance().getAdvancementManager().getEditableAdvancements().clear();
         loadAdvancements();
+        CustomAdvancement.getInstance().getAdvancementManager().reloadAdvancementTree();
         CustomAdvancement.getInstance().getAdvancementManager().reloadPlayerAdvancements();
     }
 
     public Map<String, YamlConfigWrapper> getAdvancementConfigs() {
         return advancementConfigs;
+    }
+
+    public AdvancementLoadTree getLoadTree() {
+        return loadTree;
     }
 
 }

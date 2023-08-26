@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import crypticlib.util.MsgUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -13,33 +16,33 @@ import java.util.*;
 
 public interface IAdvancementManager {
 
-    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements);
+    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements, boolean reload);
 
-    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap) {
+    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap, boolean reload) {
         Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
         for (ResourceLocation key : advancementsJsonMap.keySet()) {
             advancements.put(key, json2Advancement(key, advancementsJsonMap.get(key)));
         }
-        loadAdvancements(advancements);
+        loadAdvancements(advancements, reload);
     }
 
-    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
-        loadAdvancements(Map.of(key, advancement));
+    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement, boolean reload) {
+        loadAdvancements(Map.of(key, advancement), reload);
         getEditableAdvancements().add(key.toString());
     }
 
 
-    default void loadAdvancement(String key, Advancement.Builder advancement) {
-        loadAdvancement(new ResourceLocation(key), advancement);;
+    default void loadAdvancement(String key, Advancement.Builder advancement, boolean reload) {
+        loadAdvancement(new ResourceLocation(key), advancement, reload);
     }
 
-    default void loadAdvancementJson(String key, JsonObject advancementJson) {
-        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson));
+    default void loadAdvancementJson(String key, JsonObject advancementJson, boolean reload) {
+        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson), reload);
     }
 
-    default void loadAdvancement(String key, ConfigurationSection config) {
+    default void loadAdvancement(String key, ConfigurationSection config, boolean reload) {
         JsonObject advancementJson = config2Json(config);
-        loadAdvancementJson(key, advancementJson);
+        loadAdvancementJson(key, advancementJson, reload);
     }
 
     void removeAdvancements(Set<ResourceLocation> keySet, boolean reload);
@@ -54,6 +57,8 @@ public interface IAdvancementManager {
     }
 
     void reloadPlayerAdvancements();
+
+    void reloadAdvancementTree();
 
     boolean grantAdvancement(Player player, ResourceLocation key);
 

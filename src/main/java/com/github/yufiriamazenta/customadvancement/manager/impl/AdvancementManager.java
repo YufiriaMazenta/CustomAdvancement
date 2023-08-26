@@ -1,11 +1,13 @@
 package com.github.yufiriamazenta.customadvancement.manager.impl;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.TreeNodePosition;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +21,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum AdvancementManager implements IAdvancementManager {
@@ -32,6 +37,7 @@ public enum AdvancementManager implements IAdvancementManager {
     private Method advancementProgressIsDoneMethod, getAdvancementProgressRemainingCriteriaMethod, advancementProgressHasProgressMethod, getAdvancementProgressCompletedCriteriaMethod;
     private Method advancementFromJsonMethod;
     private Method getPlayerHandleMethod;
+    private Method treeNodeRunMethod;
     private Field serverAdvancementsField, serverPlayerListField;
     private Constructor<?> deserializationContextConstructor;
     private final List<String> advancements;
@@ -43,12 +49,15 @@ public enum AdvancementManager implements IAdvancementManager {
     }
 
     @Override
-    public void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements) {
+    public void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements, boolean reload) {
         try {
             MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
             ServerAdvancementManager advancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
             AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(advancementManager);
             addAdvancementMethod.invoke(advancementList, advancements);
+            if (reload) {
+                AdvancementLoader.INSTANCE.reloadAdvancements();
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -61,6 +70,9 @@ public enum AdvancementManager implements IAdvancementManager {
             ServerAdvancementManager advancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
             AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(advancementManager);
             removeAdvancementMethod.invoke(advancementList, keySet);
+            if (reload) {
+                AdvancementLoader.INSTANCE.reloadAdvancements();
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -81,6 +93,27 @@ public enum AdvancementManager implements IAdvancementManager {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void reloadAdvancementTree() {
+        try {
+            MinecraftServer server = (MinecraftServer) getServerMethod.invoke(null);
+            ServerAdvancementManager serverAdvancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
+            AdvancementLoader.INSTANCE.getLoadTree().getLoadNodes().forEach((nodeKey, nodeValue) -> {
+                if (nodeValue.getParentKey() == null) {
+                    try {
+                        Advancement advancement = (Advancement) getAdvancementMethod.invoke(serverAdvancementManager, new ResourceLocation(nodeKey));
+                        treeNodeRunMethod.invoke(null, advancement);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -189,6 +222,7 @@ public enum AdvancementManager implements IAdvancementManager {
             advancementProgressHasProgressMethod = AdvancementProgress.class.getMethod(methodNameMap.get("advancementProgressHasProgress").get(nmsVer));
             getAdvancementProgressCompletedCriteriaMethod = AdvancementProgress.class.getMethod(methodNameMap.get("getAdvancementProgressCompletedCriteria").get(nmsVer));
             advancementFromJsonMethod = Advancement.Builder.class.getMethod(methodNameMap.get("advancementFromJson").get(nmsVer), JsonObject.class, DeserializationContext.class);
+            treeNodeRunMethod = TreeNodePosition.class.getMethod(methodNameMap.get("treeNodeRun").get(nmsVer), Advancement.class);
             serverAdvancementsField = ServerAdvancementManager.class.getField(fieldNameMap.get("serverAdvancements").get(nmsVer));
             serverPlayerListField = PlayerList.class.getField(fieldNameMap.get("serverPlayerList").get(nmsVer));
             deserializationContextConstructor = DeserializationContext.class.getConstructors()[0];
@@ -380,6 +414,16 @@ public enum AdvancementManager implements IAdvancementManager {
         advancementFromJsonMethodNameMap.put("v1_19_R3", "a");
         advancementFromJsonMethodNameMap.put("v1_20_R1", "a");
         methodNameMap.put("advancementFromJson", advancementFromJsonMethodNameMap);
+
+        Map<String, String> treeNodeRunMethodNameMap = new ConcurrentHashMap<>();
+        treeNodeRunMethodNameMap.put("v1_17_R1", "a");
+        treeNodeRunMethodNameMap.put("v1_18_R1", "a");
+        treeNodeRunMethodNameMap.put("v1_18_R2", "a");
+        treeNodeRunMethodNameMap.put("v1_19_R1", "a");
+        treeNodeRunMethodNameMap.put("v1_19_R2", "a");
+        treeNodeRunMethodNameMap.put("v1_19_R3", "a");
+        treeNodeRunMethodNameMap.put("v1_20_R1", "a");
+        methodNameMap.put("treeNodeRun", treeNodeRunMethodNameMap);
 
         //以下加载变量
         fieldNameMap = new ConcurrentHashMap<>();

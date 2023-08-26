@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class AdvancementLoadTree {
+public final class AdvancementLoadTree {
     private final Map<String, AdvancementLoadTreeNode> loadNodes;
 
     public AdvancementLoadTree(Map<String, YamlConfigWrapper> advancementConfigs) {
@@ -53,4 +53,7 @@ final class AdvancementLoadTree {
         });
     }
 
+    public Map<String, AdvancementLoadTreeNode> getLoadNodes() {
+        return loadNodes;
+    }
 }

@@ -6,7 +6,7 @@ import crypticlib.config.impl.YamlConfigWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
-final class AdvancementLoadTreeNode {
+public final class AdvancementLoadTreeNode {
 
     private final String nodeKey;
 
@@ -24,7 +24,7 @@ final class AdvancementLoadTreeNode {
     }
 
     public void load() {
-        CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig());
+        CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig(), false);
         for (AdvancementLoadTreeNode node : childNodes.values()) {
             node.load();
         }
