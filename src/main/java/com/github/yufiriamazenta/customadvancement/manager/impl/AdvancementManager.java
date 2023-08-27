@@ -52,8 +52,6 @@ public enum AdvancementManager implements IAdvancementManager {
             ServerAdvancementManager advancementManager = (ServerAdvancementManager) getServerAdvancementsMethod.invoke(server);
             AdvancementList advancementList = (AdvancementList) serverAdvancementsField.get(advancementManager);
             addAdvancementMethod.invoke(advancementList, advancements);
-            reloadAdvancementTree();
-            reloadPlayerAdvancements();
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
