@@ -8,11 +8,6 @@ display:
   background: 'minecraft:textures/block/ice.png'
   announce_to_chat: true
 criteria:
-  imp:
-    trigger: 'minecraft:player_hurt_entity'
-    condition:
-      
-criteria:
   example:
     trigger: 'minecraft:brewed_potion'
     conditions:
