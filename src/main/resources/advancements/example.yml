@@ -1,5 +1,5 @@
 display:
-  icon: 'minecraft:iron_ingot'
+  icon: 'stone'
   title: '&6示例进度'
   description: '&7这是一个示例进度'
   hidden: false

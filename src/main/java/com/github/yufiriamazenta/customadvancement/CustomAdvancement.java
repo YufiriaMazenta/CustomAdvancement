@@ -19,12 +19,20 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         saveDefaultConfig();
         loadLangFile();
         loadAdvancementImpl();
-        AdvancementLoader.INSTANCE.loadAdvancements();
-        advancementManager.reloadAdvancementTree();
+        try {
+            loadAdvancements();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void disable() {
+    }
+
+    private void loadAdvancements() throws Exception {
+        AdvancementLoader.INSTANCE.loadAdvancements();
+        advancementManager.reloadAdvancementTree();
     }
 
     private void loadAdvancementImpl() {

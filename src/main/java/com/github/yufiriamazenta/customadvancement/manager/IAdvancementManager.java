@@ -1,9 +1,14 @@
 package com.github.yufiriamazenta.customadvancement.manager;
 
+import com.github.yufiriamazenta.customadvancement.util.ItemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import crypticlib.item.Item;
+import crypticlib.util.ItemUtil;
+import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
+import io.netty.util.SuppressForbidden;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -11,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -83,7 +89,12 @@ public interface IAdvancementManager {
         //显示数据json
         JsonObject displayJson = new JsonObject();
         JsonObject iconJson = new JsonObject();
-        iconJson.addProperty("item", config.getString("display.icon"));
+        String item = config.getString("display.icon", "stone");
+        ItemStack itemStack = ItemUtils.matchItem(item);
+        if (itemStack.hasItemMeta()) {
+            iconJson.addProperty("nbt", Item.fromBukkitItem(itemStack).getNbtTag().toJsonStr());
+        }
+        iconJson.addProperty("item", itemStack.getType().getKey().toString());
         displayJson.add("icon", iconJson);
         displayJson.addProperty("title", MsgUtil.color(config.getString("display.title", "Unset title")));
         displayJson.addProperty("description", MsgUtil.color(config.getString("display.description", "Unset description")));
@@ -95,7 +106,7 @@ public interface IAdvancementManager {
         displayJson.addProperty("announce_to_chat", config.getBoolean("display.announce_to_chat", true));
         rootJson.add("display", displayJson);
 
-        Gson gson = new Gson();
+        Gson gson = JsonUtil.getGson();
         //准则列表json
         ConfigurationSection criteria = config.getConfigurationSection("criteria");
         JsonObject criteriaJson;

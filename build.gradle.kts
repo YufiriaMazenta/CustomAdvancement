@@ -17,6 +17,7 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://mvn.lumine.io/repository/maven-public/")
+    maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     mavenCentral()
 }
 
@@ -27,12 +28,15 @@ dependencies {
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.1")
+    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.5.0b")
+    compileOnly("com.github.oraxen:oraxen:1.160.0")
+    compileOnly("io.lumine:Mythic-Dist:5.3.5")
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
-    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.1")
+    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.2")
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev11"
+version = "1.0.0-dev12"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17

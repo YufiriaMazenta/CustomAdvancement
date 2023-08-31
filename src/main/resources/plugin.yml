@@ -4,6 +4,7 @@ main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
 api-version: 1.17
 load: STARTUP
 authors: [ YufiriaMazenta ]
+soft-depends: [ ItemsAdder, Oraxen, MythicMobs ]
 folia-supported: true
 commands:
   customadvancement:
