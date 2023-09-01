@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.text.SimpleDateFormat
 
 plugins {
@@ -18,6 +17,7 @@ repositories {
     maven("https://repo.maven.apache.org/maven2/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
+    maven("https://r.irepo.space/maven/")
     mavenCentral()
 }
 
@@ -31,33 +31,21 @@ dependencies {
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.5.0b")
     compileOnly("com.github.oraxen:oraxen:1.160.0")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
+    compileOnly("pers.neige.neigeitems:NeigeItems:1.15.19")
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.2")
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev12"
+version = "1.0.0-dev13"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
-
-tasks.withType<ShadowJar> {
-    relocate("crypticlib", "com.github.yufiriamazenta.crypticlib")
-    destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
-}
-
-tasks.withType<Jar> {
-    destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
-}
 
 publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
     }
-}
-
-tasks.withType(JavaCompile::class.java) {
-    options.encoding = "UTF-8"
 }
 
 tasks {
@@ -73,5 +61,15 @@ tasks {
     }
     assemble {
         dependsOn(reobfJar)
+    }
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+    jar {
+        destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
+    }
+    shadowJar {
+        relocate("crypticlib", "com.github.yufiriamazenta.crypticlib")
+        destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
     }
 }

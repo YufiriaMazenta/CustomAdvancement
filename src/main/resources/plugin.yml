@@ -2,9 +2,9 @@ name: CustomAdvancement
 version: '${version}'
 main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
 api-version: 1.17
-load: STARTUP
+load: POSTWORLD
 authors: [ YufiriaMazenta ]
-soft-depends: [ ItemsAdder, Oraxen, MythicMobs ]
+soft-depends: [ ItemsAdder, Oraxen, MythicMobs, NeigeItems ]
 folia-supported: true
 commands:
   customadvancement:

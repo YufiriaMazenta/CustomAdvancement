@@ -8,6 +8,8 @@ import io.lumine.mythic.core.items.MythicItem;
 import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import pers.neige.neigeitems.NeigeItems;
+import pers.neige.neigeitems.manager.ItemManager;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +24,7 @@ public class ItemUtils {
                 case "items_adder" -> getItemsAdderItem(key);
                 case "oraxen" -> getOraxenItem(key);
                 case "mythic_mobs" -> getMythicMobsItem(key);
+                case "ni" -> getNIItem(key);
                 case "minecraft" -> new ItemStack(Objects.requireNonNull(Material.matchMaterial(key)));
                 default -> throw new IllegalArgumentException(namespace + " is not a valid item namespace");
             };
@@ -59,6 +62,12 @@ public class ItemUtils {
         MythicItem mythicItem = itemOptional.get();
         int amount = mythicItem.getAmount();
         return BukkitAdapter.adapt(itemOptional.get().generateItemStack(amount));
+    }
+
+    public static ItemStack getNIItem(String itemStr) {
+        if (!ItemManager.INSTANCE.hasItem(itemStr))
+            throw new IllegalArgumentException(itemStr + " is not a valid NeigeItems item");
+        return ItemManager.INSTANCE.getItemStack(itemStr);
     }
 
 }
