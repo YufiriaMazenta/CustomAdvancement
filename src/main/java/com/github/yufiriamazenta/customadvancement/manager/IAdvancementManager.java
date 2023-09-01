@@ -8,6 +8,7 @@ import crypticlib.item.Item;
 import crypticlib.util.ItemUtil;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
+import crypticlib.util.YamlConfigUtil;
 import io.netty.util.SuppressForbidden;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,7 @@ public interface IAdvancementManager {
     default void loadAdvancement(String key, ConfigurationSection config) {
         JsonObject advancementJson = config2Json(config);
         loadAdvancementJson(key, advancementJson);
+
     }
 
     void removeAdvancements(Set<ResourceLocation> keySet);
@@ -108,10 +110,10 @@ public interface IAdvancementManager {
 
         Gson gson = JsonUtil.getGson();
         //准则列表json
-        ConfigurationSection criteria = config.getConfigurationSection("criteria");
+        ConfigurationSection criteria = config.getConfigurationSection("criteria.vanilla");
         JsonObject criteriaJson;
         if (criteria != null) {
-            criteriaJson = gson.fromJson(gson.toJson(configSection2Map(criteria)), JsonObject.class);
+            criteriaJson = JsonUtil.configSection2Json(criteria);
         } else {
             criteriaJson = new JsonObject();
             JsonObject impJson = new JsonObject();
@@ -120,11 +122,10 @@ public interface IAdvancementManager {
         }
         rootJson.add("criteria", criteriaJson);
 
-
         //需要完成的准则列表
-        List<?> requirements = config.getList("requirements");
+        List<?> requirements = config.getList("requirements.vanilla");
         if (requirements != null && requirements.size() >= 1) {
-            JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(configList2List(requirements)), JsonArray.class);
+            JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(YamlConfigUtil.configList2List(requirements)), JsonArray.class);
             rootJson.add("requirements", requirementsJsonArr);
         }
 
@@ -153,34 +154,6 @@ public interface IAdvancementManager {
         }
 
         return rootJson;
-    }
-
-    default Map<String, Object> configSection2Map(ConfigurationSection configSection) {
-        Map<String, Object> map = new HashMap<>();
-        for (String key : configSection.getKeys(false)) {
-            if (configSection.isConfigurationSection(key)) {
-                map.put(key, configSection2Map(configSection.getConfigurationSection(key)));
-            } else if (configSection.isList(key)){
-                map.put(key, configList2List(configSection.getList(key)));
-            } else {
-                map.put(key, configSection.get(key));
-            }
-        }
-        return map;
-    }
-
-    default List<Object> configList2List(List<?> origin) {
-        List<Object> list = new ArrayList<>();
-        for (Object o : origin) {
-            if (o instanceof ConfigurationSection) {
-                list.add(configSection2Map((ConfigurationSection) o));
-            } else if (o instanceof List<?>) {
-                list.add(configList2List((List<?>) o));
-            } else {
-                list.add(o);
-            }
-        }
-        return list;
     }
 
     List<String> getAdvancements();

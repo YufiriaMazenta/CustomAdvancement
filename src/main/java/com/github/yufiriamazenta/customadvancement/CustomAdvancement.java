@@ -1,5 +1,6 @@
 package com.github.yufiriamazenta.customadvancement;
 
+import com.github.yufiriamazenta.customadvancement.criteria.CriteriaManager;
 import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
 import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
@@ -12,6 +13,7 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
     private static CustomAdvancement INSTANCE;
     private YamlConfigWrapper langFile;
     private IAdvancementManager advancementManager;
+    private CriteriaManager criteriaManager;
 
     @Override
     public void enable() {
@@ -37,6 +39,7 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
 
     private void loadAdvancementImpl() {
         advancementManager = AdvancementManager.INSTANCE;
+        criteriaManager = CriteriaManager.INSTANCE;
     }
 
     private void loadLangFile() {
