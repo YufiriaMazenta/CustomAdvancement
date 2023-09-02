@@ -1,25 +1,24 @@
 package com.github.yufiriamazenta.customadvancement.manager;
 
+import com.github.yufiriamazenta.customadvancement.criteria.CriteriaManager;
 import com.github.yufiriamazenta.customadvancement.util.ItemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import crypticlib.item.Item;
-import crypticlib.util.ItemUtil;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
 import crypticlib.util.YamlConfigUtil;
-import io.netty.util.SuppressForbidden;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface IAdvancementManager {
 
@@ -50,7 +49,10 @@ public interface IAdvancementManager {
     default void loadAdvancement(String key, ConfigurationSection config) {
         JsonObject advancementJson = config2Json(config);
         loadAdvancementJson(key, advancementJson);
-
+        ConfigurationSection customCriteria = config.getConfigurationSection("criteria.custom_advancement");
+        if (customCriteria != null) {
+            CriteriaManager.INSTANCE.loadAdvancementCriteria(key, YamlConfigUtil.configSection2Map(customCriteria));
+        }
     }
 
     void removeAdvancements(Set<ResourceLocation> keySet);
@@ -110,10 +112,10 @@ public interface IAdvancementManager {
 
         Gson gson = JsonUtil.getGson();
         //准则列表json
-        ConfigurationSection criteria = config.getConfigurationSection("criteria.vanilla");
+        ConfigurationSection vanillaCriteria = config.getConfigurationSection("criteria.vanilla");
         JsonObject criteriaJson;
-        if (criteria != null) {
-            criteriaJson = JsonUtil.configSection2Json(criteria);
+        if (vanillaCriteria != null) {
+            criteriaJson = JsonUtil.configSection2Json(vanillaCriteria);
         } else {
             criteriaJson = new JsonObject();
             JsonObject impJson = new JsonObject();

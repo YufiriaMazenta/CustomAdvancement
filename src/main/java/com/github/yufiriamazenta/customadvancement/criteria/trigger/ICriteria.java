@@ -1,4 +1,4 @@
-package com.github.yufiriamazenta.customadvancement.criteria;
+package com.github.yufiriamazenta.customadvancement.criteria.trigger;
 
 import org.bukkit.event.Event;
 
