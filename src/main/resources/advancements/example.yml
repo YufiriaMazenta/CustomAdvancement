@@ -18,12 +18,14 @@ criteria:
   custom_advancement:
     example:
       trigger: 'chat'
-
+      conditions:
+        msg:
+          pattern: ''
 requirements:
   vanilla:
     - - 'example'
   custom_advancement:
-
+    - - 'example'
 rewards:
   exp: 3
 

@@ -43,7 +43,11 @@ public final class AdvancementLoadTree {
 
     void load() {
         loadNodes.forEach((nodeKey, node) -> {
-            node.load();
+            try {
+                node.load();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         });
     }
 
