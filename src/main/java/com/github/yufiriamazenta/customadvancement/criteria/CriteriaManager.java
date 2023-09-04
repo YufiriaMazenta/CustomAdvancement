@@ -5,12 +5,12 @@ import com.github.yufiriamazenta.customadvancement.criteria.trigger.ICriteria;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public enum CriteriaManager {
 
     INSTANCE;
-    private final Map<String, Function<Map<String, Object>, ICriteria<?>>> criteriaProviderMap;
+    private final Map<String, BiFunction<String, Map<String, Object>, ICriteria<?>>> criteriaProviderMap;
     private final Map<String, Map<String, ICriteria<?>>> advancementCriteriaMap;
 
     CriteriaManager() {
@@ -25,8 +25,8 @@ public enum CriteriaManager {
             if (criteria.get(criteriaName) instanceof Map) {
                 Map<String, Object> criteriaMap = (Map<String, Object>) criteria.get(criteriaName);
                 String triggerName = (String) criteriaMap.get("trigger");
-                Function<Map<String, Object>, ICriteria<?>> criteriaProvider = getCriteriaProvider(triggerName);
-                ICriteria<?> criteriaObj = criteriaProvider != null? criteriaProvider.apply((Map<String, Object>) criteriaMap.get("conditions")) : null;
+                BiFunction<String, Map<String, Object>, ICriteria<?>> criteriaProvider = getCriteriaProvider(advancementKey, triggerName);
+                ICriteria<?> criteriaObj = criteriaProvider != null? criteriaProvider.apply(advancementKey, (Map<String, Object>) criteriaMap.get("conditions")) : null;
                 if (criteriaObj != null) {
                     advancementCriteria.put(criteriaName, criteriaObj);
                 }
@@ -39,11 +39,11 @@ public enum CriteriaManager {
         regCriteriaProvider("chat", CriteriaChat::new);
     }
 
-    public Function<Map<String, Object>, ICriteria<?>> getCriteriaProvider(String criteriaName) {
+    public BiFunction<String, Map<String, Object>, ICriteria<?>> getCriteriaProvider(String advancementKey, String criteriaName) {
         return criteriaProviderMap.get(criteriaName);
     }
 
-    public boolean regCriteriaProvider(String criteriaName, Function<Map<String, Object>, ICriteria<?>> criteriaProvider, boolean force) {
+    public boolean regCriteriaProvider(String criteriaName, BiFunction<String, Map<String, Object>, ICriteria<?>> criteriaProvider, boolean force) {
         if (criteriaProviderMap.containsKey(criteriaName)) {
             if (!force)
                 return false;
@@ -52,7 +52,7 @@ public enum CriteriaManager {
         return true;
     }
 
-    public boolean regCriteriaProvider(String criteriaName, Function<Map<String, Object>, ICriteria<?>> triggerProvider) {
+    public boolean regCriteriaProvider(String criteriaName, BiFunction<String, Map<String, Object>, ICriteria<?>> triggerProvider) {
         return regCriteriaProvider(criteriaName, triggerProvider, false);
     }
 

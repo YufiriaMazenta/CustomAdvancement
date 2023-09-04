@@ -11,4 +11,10 @@ public interface ICriteria<E extends Event> {
      */
     boolean check(E event);
 
+    boolean isDone();
+
+    void setDone(boolean done);
+
+    String getAdvancementKey();
+
 }
