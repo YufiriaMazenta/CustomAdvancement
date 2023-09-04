@@ -1,0 +1,17 @@
+data:
+  #持久化数据的存储方式，支持vanilla，yaml，sqlite和mysql
+  type: vanilla
+  mysql:
+    address: localhost
+    port: 3306
+    database: test
+    user: root
+    password: 123456
+    args: '?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai'
+  hikariCP:
+    driver: com.mysql.cj.jdbc.Driver
+    connectionTimeout: 30000
+    maxLifeTime: 30000
+    minimumIdle: 30000
+    maximumPoolSize: 50
+    autoCommit: true

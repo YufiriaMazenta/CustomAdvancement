@@ -30,8 +30,4 @@ public enum RequirementManager {
         return advancementRequirementMap;
     }
 
-    public boolean checkAdvancement() {
-
-    }
-
 }
