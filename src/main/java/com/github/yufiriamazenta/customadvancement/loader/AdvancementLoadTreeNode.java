@@ -1,10 +1,16 @@
 package com.github.yufiriamazenta.customadvancement.loader;
 
 import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
+import crypticlib.util.JsonUtil;
+import crypticlib.util.MsgUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class AdvancementLoadTreeNode {
 
@@ -12,19 +18,41 @@ public final class AdvancementLoadTreeNode {
 
     private final YamlConfigWrapper advancementConfig;
     private final Map<String, AdvancementLoadTreeNode> childNodes;
+    private final JsonObject advancementJson;
 
     public AdvancementLoadTreeNode(String nodeKey, YamlConfigWrapper advancementConfig, Map<String, AdvancementLoadTreeNode> childNodes) {
         this.nodeKey = nodeKey;
         this.advancementConfig = advancementConfig;
         this.childNodes = childNodes;
+        this.advancementJson = null;
+    }
+
+    public AdvancementLoadTreeNode(String nodeKey, JsonObject advancementJson, Map<String, AdvancementLoadTreeNode> childNodes) {
+        this.nodeKey = nodeKey;
+        this.advancementConfig = null;
+        this.childNodes = childNodes;
+        this.advancementJson = advancementJson;
     }
 
     public AdvancementLoadTreeNode(String nodeKey, YamlConfigWrapper advancementConfig) {
-        this(nodeKey, advancementConfig, new HashMap<>());
+        this(nodeKey, advancementConfig, new ConcurrentHashMap<>());
+    }
+
+    public AdvancementLoadTreeNode(String nodeKey, JsonObject jsonObject) {
+        this(nodeKey, jsonObject, new ConcurrentHashMap<>());
     }
 
     public void load() {
-        CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig());
+        try {
+            if (advancementConfig != null && advancementJson == null) {
+                CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig());
+            } else if (advancementJson != null && advancementConfig == null) {
+                CustomAdvancement.getInstance().getAdvancementManager().loadAdvancementJson(nodeKey, advancementJson);
+            }
+        } catch (Throwable e) {
+            MsgUtil.info("&cAn error occurred while loading advancement " + nodeKey);
+            e.printStackTrace();
+        }
         for (AdvancementLoadTreeNode node : childNodes.values()) {
             node.load();
         }
@@ -43,7 +71,15 @@ public final class AdvancementLoadTreeNode {
     }
 
     public String getParentKey() {
-        return advancementConfig.getConfig().getString("parent");
+        if (advancementConfig != null && advancementJson == null)
+            return advancementConfig.getConfig().getString("parent");
+        else if (advancementJson != null && advancementConfig == null)
+            if (advancementJson.has("parent"))
+                return advancementJson.get("parent").getAsString();
+            else
+                return null;
+        else
+            return null;
     }
 
     public AdvancementLoadTreeNode matchNode(String key) {

@@ -1,10 +1,8 @@
 package com.github.yufiriamazenta.customadvancement;
 
-import com.github.yufiriamazenta.customadvancement.criteria.CriteriaManager;
 import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
-import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
 import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
-import com.github.yufiriamazenta.customadvancement.requirement.RequirementManager;
+import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
 import crypticlib.BukkitPlugin;
 import crypticlib.config.impl.YamlConfigWrapper;
 import org.bukkit.event.Listener;
@@ -14,15 +12,13 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
     private static CustomAdvancement INSTANCE;
     private YamlConfigWrapper langFile;
     private IAdvancementManager advancementManager;
-    private CriteriaManager criteriaManager;
-    private RequirementManager requirementManager;
 
     @Override
     public void enable() {
         INSTANCE = this;
         saveDefaultConfig();
         loadLangFile();
-        loadAdvancementImpl();
+        loadAdvancementManager();
         loadAdvancements();
     }
 
@@ -35,10 +31,8 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         advancementManager.reloadAdvancementTree();
     }
 
-    private void loadAdvancementImpl() {
+    private void loadAdvancementManager() {
         advancementManager = AdvancementManager.INSTANCE;
-        criteriaManager = CriteriaManager.INSTANCE;
-        requirementManager = RequirementManager.INSTANCE;
     }
 
     private void loadLangFile() {
@@ -65,24 +59,8 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         this.advancementManager = advancementManager;
     }
 
-    public CriteriaManager getCriteriaManager() {
-        return criteriaManager;
-    }
-
-    public RequirementManager getRequirementManager() {
-        return requirementManager;
-    }
-
     public void setLangFile(YamlConfigWrapper langFile) {
         this.langFile = langFile;
-    }
-
-    public void setCriteriaManager(CriteriaManager criteriaManager) {
-        this.criteriaManager = criteriaManager;
-    }
-
-    public void setRequirementManager(RequirementManager requirementManager) {
-        this.requirementManager = requirementManager;
     }
 
 }

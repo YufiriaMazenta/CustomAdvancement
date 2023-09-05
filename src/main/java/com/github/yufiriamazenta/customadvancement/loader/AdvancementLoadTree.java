@@ -1,23 +1,27 @@
 package com.github.yufiriamazenta.customadvancement.loader;
 
 import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
+import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class AdvancementLoadTree {
     private final Map<String, AdvancementLoadTreeNode> loadNodes;
 
-    public AdvancementLoadTree(Map<String, YamlConfigWrapper> advancementConfigs) {
+    public AdvancementLoadTree(Map<String, Object> advancementFiles) {
         loadNodes = new HashMap<>();
 
-        while (advancementConfigs.size() >= 1) {
+        while (advancementFiles.size() >= 1) {
             List<String> removeList = new ArrayList<>();
-            advancementConfigs.forEach((key, config) -> {
-                AdvancementLoadTreeNode node = new AdvancementLoadTreeNode(key, config);
+            advancementFiles.forEach((key, advancementFile) -> {
+                AdvancementLoadTreeNode node;
+                if (advancementFile instanceof YamlConfigWrapper)
+                    node = new AdvancementLoadTreeNode(key, (YamlConfigWrapper) advancementFile);
+                else if (advancementFile instanceof JsonObject)
+                    node = new AdvancementLoadTreeNode(key, (JsonObject) advancementFile);
+                else
+                    throw new IllegalArgumentException("Unsupported advancement file type");
                 String parentKey = node.getParentKey();
                 if (parentKey == null || !parentKey.startsWith("custom_advancement:")) {
                     loadNodes.put(key, node);
@@ -32,22 +36,18 @@ public final class AdvancementLoadTree {
                         return;
                     }
                 }
-                if (!advancementConfigs.containsKey(parentKey)) {
+                if (!advancementFiles.containsKey(parentKey)) {
                     loadNodes.put(key, node);
                     removeList.add(key);
                 }
             });
-            removeList.forEach(advancementConfigs::remove);
+            removeList.forEach(advancementFiles::remove);
         }
     }
 
-    void load() {
+    public void load() {
         loadNodes.forEach((nodeKey, node) -> {
-            try {
-                node.load();
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
+            node.load();
         });
     }
 

@@ -1,6 +1,6 @@
 package com.github.yufiriamazenta.customadvancement.manager;
 
-import com.github.yufiriamazenta.customadvancement.criteria.CriteriaManager;
+
 import com.github.yufiriamazenta.customadvancement.util.ItemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -11,6 +11,8 @@ import crypticlib.util.MsgUtil;
 import crypticlib.util.YamlConfigUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,9 +36,10 @@ public interface IAdvancementManager {
 
     default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
         loadAdvancements(Map.of(key, advancement));
-        getEditableAdvancements().add(key.toString());
+        if (Bukkit.getAdvancement(NamespacedKey.fromString(key.toString())) != null) {
+            getEditableAdvancements().add(key.toString());
+        }
     }
-
 
     default void loadAdvancement(String key, Advancement.Builder advancement) {
         loadAdvancement(new ResourceLocation(key), advancement);
@@ -49,10 +52,6 @@ public interface IAdvancementManager {
     default void loadAdvancement(String key, ConfigurationSection config) {
         JsonObject advancementJson = config2Json(config);
         loadAdvancementJson(key, advancementJson);
-        ConfigurationSection customCriteria = config.getConfigurationSection("criteria.custom_advancement");
-        if (customCriteria != null) {
-            CriteriaManager.INSTANCE.loadAdvancementCriteria(key, YamlConfigUtil.configSection2Map(customCriteria));
-        }
     }
 
     void removeAdvancements(Set<ResourceLocation> keySet);
@@ -112,10 +111,10 @@ public interface IAdvancementManager {
 
         Gson gson = JsonUtil.getGson();
         //准则列表json
-        ConfigurationSection vanillaCriteria = config.getConfigurationSection("criteria.vanilla");
+        ConfigurationSection criteria = config.getConfigurationSection("criteria");
         JsonObject criteriaJson;
-        if (vanillaCriteria != null) {
-            criteriaJson = JsonUtil.configSection2Json(vanillaCriteria);
+        if (criteria != null) {
+            criteriaJson = JsonUtil.configSection2Json(criteria);
         } else {
             criteriaJson = new JsonObject();
             JsonObject impJson = new JsonObject();
@@ -125,7 +124,7 @@ public interface IAdvancementManager {
         rootJson.add("criteria", criteriaJson);
 
         //需要完成的准则列表
-        List<?> requirements = config.getList("requirements.vanilla");
+        List<?> requirements = config.getList("requirements");
         if (requirements != null && requirements.size() >= 1) {
             JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(YamlConfigUtil.configList2List(requirements)), JsonArray.class);
             rootJson.add("requirements", requirementsJsonArr);
