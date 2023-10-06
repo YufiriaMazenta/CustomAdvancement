@@ -1,16 +1,16 @@
-package com.github.yufiriamazenta.customadvancement.loader;
+package com.github.yufiriamazenta.customadv.loader;
 
-import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 
 public final class AdvancementLoadTreeNode {
 
@@ -45,9 +45,10 @@ public final class AdvancementLoadTreeNode {
     public void load() {
         try {
             if (advancementConfig != null && advancementJson == null) {
-                CustomAdvancement.getInstance().getAdvancementManager().loadAdvancement(nodeKey, advancementConfig.getConfig());
-            } else if (advancementJson != null && advancementConfig == null) {
-                CustomAdvancement.getInstance().getAdvancementManager().loadAdvancementJson(nodeKey, advancementJson);
+                CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey, advancementConfig.getConfig()).register();
+            }
+            else if (advancementJson != null && advancementConfig == null) {
+                CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey, advancementJson).register();
             }
         } catch (Throwable e) {
             MsgUtil.info("&cAn error occurred while loading advancement " + nodeKey);

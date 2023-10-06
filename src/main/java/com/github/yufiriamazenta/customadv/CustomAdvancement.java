@@ -1,8 +1,8 @@
-package com.github.yufiriamazenta.customadvancement;
+package com.github.yufiriamazenta.customadv;
 
-import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
-import com.github.yufiriamazenta.customadvancement.manager.IAdvancementManager;
-import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
+import com.github.yufiriamazenta.customadv.loader.AdvancementLoader;
+import com.github.yufiriamazenta.customadv.manager.IAdvancementManager;
+import com.github.yufiriamazenta.customadv.manager.impl.V1_20_R2AdvancementManager;
 import crypticlib.BukkitPlugin;
 import crypticlib.config.impl.YamlConfigWrapper;
 import org.bukkit.event.Listener;
@@ -31,10 +31,6 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         advancementManager.reloadAdvancementTree();
     }
 
-    private void loadAdvancementManager() {
-        advancementManager = AdvancementManager.INSTANCE;
-    }
-
     private void loadLangFile() {
         langFile = new YamlConfigWrapper(this, "lang.yml");
     }
@@ -61,6 +57,13 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
 
     public void setLangFile(YamlConfigWrapper langFile) {
         this.langFile = langFile;
+    }
+
+    private void loadAdvancementManager() {
+        advancementManager = switch (CustomAdvancement.getInstance().getNmsVersion()) {
+            case "v1_20_R2" -> new V1_20_R2AdvancementManager();
+            default -> throw new UnsupportedOperationException("Unknown version");
+        };
     }
 
 }

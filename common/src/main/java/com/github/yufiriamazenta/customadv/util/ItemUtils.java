@@ -1,4 +1,4 @@
-package com.github.yufiriamazenta.customadvancement.util;
+package com.github.yufiriamazenta.customadv.util;
 
 import dev.lone.itemsadder.api.CustomStack;
 import io.lumine.mythic.bukkit.BukkitAdapter;
@@ -8,7 +8,6 @@ import io.lumine.mythic.core.items.MythicItem;
 import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import pers.neige.neigeitems.NeigeItems;
 import pers.neige.neigeitems.manager.ItemManager;
 
 import java.util.Objects;

@@ -1,6 +1,6 @@
 name: CustomAdvancement
 version: '${version}'
-main: com.github.yufiriamazenta.customadvancement.CustomAdvancement
+main: com.github.yufiriamazenta.customadv.CustomAdvancement
 api-version: 1.17
 load: POSTWORLD
 authors: [ YufiriaMazenta ]

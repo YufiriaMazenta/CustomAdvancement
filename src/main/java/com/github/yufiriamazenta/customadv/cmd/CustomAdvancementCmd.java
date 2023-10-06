@@ -1,9 +1,9 @@
-package com.github.yufiriamazenta.customadvancement.cmd;
+package com.github.yufiriamazenta.customadv.cmd;
 
-import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
-import com.github.yufiriamazenta.customadvancement.cmd.sub.GrantCommand;
-import com.github.yufiriamazenta.customadvancement.cmd.sub.ReloadCommand;
-import com.github.yufiriamazenta.customadvancement.cmd.sub.RevokeCommand;
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
+import com.github.yufiriamazenta.customadv.cmd.sub.GrantCommand;
+import com.github.yufiriamazenta.customadv.cmd.sub.ReloadCommand;
+import com.github.yufiriamazenta.customadv.cmd.sub.RevokeCommand;
 import crypticlib.annotations.BukkitCommand;
 import crypticlib.command.IPluginCommand;
 import crypticlib.command.ISubCommand;

@@ -1,7 +1,7 @@
-package com.github.yufiriamazenta.customadvancement.loader;
+package com.github.yufiriamazenta.customadv.loader;
 
-import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
-import com.google.gson.Gson;
+import com.github.yufiriamazenta.customadv.AdvancementsCache;
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
 import crypticlib.util.FileUtil;
@@ -9,10 +9,9 @@ import crypticlib.util.JsonUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -22,7 +21,7 @@ public enum AdvancementLoader {
 
     private final File advancementsFolder;
     private final Map<String, Object> advancementFiles;
-    private AdvancementLoadTree yamlAdvancementLoadTree;
+    private AdvancementLoadTree advancementLoadTree;
 
     AdvancementLoader() {
         advancementFiles = new ConcurrentHashMap<>();
@@ -55,18 +54,18 @@ public enum AdvancementLoader {
                 }
             }
         }
-        yamlAdvancementLoadTree = new AdvancementLoadTree(advancementFiles);
-        yamlAdvancementLoadTree.load();
+        advancementLoadTree = new AdvancementLoadTree(advancementFiles);
+        advancementLoadTree.load();
     }
 
     public void unloadAdvancements() {
-        yamlAdvancementLoadTree.unload();
+        advancementLoadTree.unload();
     }
 
     public void reloadAdvancements() {
         unloadAdvancements();
         advancementFiles.clear();
-        CustomAdvancement.getInstance().getAdvancementManager().getEditableAdvancements().clear();
+        AdvancementsCache.getAdvancementWrapperMap().clear();
         loadAdvancements();
         CustomAdvancement.getInstance().getAdvancementManager().reloadAdvancementTree();
         CustomAdvancement.getInstance().getAdvancementManager().reloadPlayerAdvancements();
@@ -76,8 +75,8 @@ public enum AdvancementLoader {
         return advancementFiles;
     }
 
-    public AdvancementLoadTree getYamlAdvancementLoadTree() {
-        return yamlAdvancementLoadTree;
+    public AdvancementLoadTree getAdvancementLoadTree() {
+        return advancementLoadTree;
     }
 
     public String getAdvancementKeyFromFile(File file) {

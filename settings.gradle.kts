@@ -3,3 +3,5 @@ plugins {
 }
 
 rootProject.name = "CustomAdvancement"
+include("common")
+include("v1_20_R2")

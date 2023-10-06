@@ -1,6 +1,7 @@
-package com.github.yufiriamazenta.customadvancement.cmd.sub;
+package com.github.yufiriamazenta.customadv.cmd.sub;
 
-import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.github.yufiriamazenta.customadv.AdvancementsCache;
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import crypticlib.command.ISubCommand;
 import crypticlib.util.MsgUtil;
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public enum GrantCommand implements ISubCommand {
             return true;
         }
 
-        if (CustomAdvancement.getInstance().getAdvancementManager().grantAdvancement(player, args.get(1))) {
+        if (CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(args.get(1)).grant(player)) {
             MsgUtil.sendLang(sender, langConfig, "command.grant_success", Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix(), "%player%", args.get(0)));
         } else {
             MsgUtil.sendLang(sender, langConfig, "command.grant_failed_not_exist_advancement", Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
@@ -69,7 +70,7 @@ public enum GrantCommand implements ISubCommand {
             playerNameList.removeIf(str -> !str.startsWith(args.get(0)));
             return playerNameList;
         } else if (args.size() == 2) {
-            List<String> advancements = new ArrayList<>(CustomAdvancement.getInstance().getAdvancementManager().getAdvancements());
+            List<String> advancements = new ArrayList<>(AdvancementsCache.getAdvancements());
             advancements.removeIf(str -> !str.startsWith(args.get(1)));
             return advancements;
         } else {

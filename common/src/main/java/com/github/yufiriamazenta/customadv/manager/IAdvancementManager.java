@@ -1,7 +1,8 @@
-package com.github.yufiriamazenta.customadvancement.manager;
+package com.github.yufiriamazenta.customadv.manager;
 
 
-import com.github.yufiriamazenta.customadvancement.util.ItemUtils;
+import com.github.yufiriamazenta.customadv.adv.AbstractAdvancementWrapper;
+import com.github.yufiriamazenta.customadv.util.ItemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,81 +10,18 @@ import crypticlib.item.Item;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
 import crypticlib.util.YamlConfigUtil;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.resources.ResourceLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface IAdvancementManager {
 
-    void loadAdvancements(Map<ResourceLocation, Advancement.Builder> advancements);
+    AbstractAdvancementWrapper advancementWrapper(String key, JsonObject jsonObject);
 
-    default void loadAdvancementsJson(Map<ResourceLocation, JsonObject> advancementsJsonMap) {
-        Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
-        for (ResourceLocation key : advancementsJsonMap.keySet()) {
-            advancements.put(key, json2Advancement(key, advancementsJsonMap.get(key)));
-        }
-        loadAdvancements(advancements);
-    }
+    AbstractAdvancementWrapper advancementWrapper(String key);
 
-    default void loadAdvancement(ResourceLocation key, Advancement.Builder advancement) {
-        loadAdvancements(Map.of(key, advancement));
-        if (Bukkit.getAdvancement(NamespacedKey.fromString(key.toString())) != null) {
-            getEditableAdvancements().add(key.toString());
-        }
-    }
-
-    default void loadAdvancement(String key, Advancement.Builder advancement) {
-        loadAdvancement(new ResourceLocation(key), advancement);
-    }
-
-    default void loadAdvancementJson(String key, JsonObject advancementJson) {
-        loadAdvancement(key, json2Advancement(new ResourceLocation(key), advancementJson));
-    }
-
-    default void loadAdvancement(String key, ConfigurationSection config) {
-        JsonObject advancementJson = config2Json(config);
-        loadAdvancementJson(key, advancementJson);
-    }
-
-    void removeAdvancements(Set<ResourceLocation> keySet);
-
-    default void removeAdvancement(ResourceLocation key) {
-        removeAdvancements(Set.of(key));
-        getEditableAdvancements().remove(key.toString());
-    }
-
-    default void removeAdvancement(String key) {
-        removeAdvancement(new ResourceLocation(key));
-    }
-
-    void reloadPlayerAdvancements();
-
-    void reloadAdvancementTree();
-
-    boolean grantAdvancement(Player player, ResourceLocation key);
-
-    default boolean grantAdvancement(Player player, String key) {
-        return grantAdvancement(player, new ResourceLocation(key));
-    }
-
-    boolean revokeAdvancement(Player player, ResourceLocation key);
-
-    default boolean revokeAdvancement(Player player, String key) {
-        return revokeAdvancement(player, new ResourceLocation(key));
-    }
-
-    Advancement.Builder json2Advancement(ResourceLocation key, JsonObject advancementJson);
-
-    default JsonObject config2Json(ConfigurationSection config) {
+    default AbstractAdvancementWrapper advancementWrapper(String key, ConfigurationSection config) {
         JsonObject rootJson = new JsonObject();
         if (config.getString("parent") != null) {
             rootJson.addProperty("parent", config.getString("parent"));
@@ -153,11 +91,11 @@ public interface IAdvancementManager {
             }
             rootJson.add("rewards", rewardsJson);
         }
-
-        return rootJson;
+        return advancementWrapper(key, rootJson);
     }
 
-    List<String> getAdvancements();
+    void reloadAdvancementTree();
 
-    List<String> getEditableAdvancements();
+    void reloadPlayerAdvancements();
+
 }

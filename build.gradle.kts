@@ -32,12 +32,15 @@ dependencies {
     compileOnly("com.github.oraxen:oraxen:1.160.0")
     compileOnly("io.lumine:Mythic-Dist:5.3.5")
     compileOnly("pers.neige.neigeitems:NeigeItems:1.15.19")
-    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
+    compileOnly("commons-io:commons-io:2.14.0")
+    paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.5")
+    implementation(project(":common"))
+    implementation(project(":v1_20_R2"))
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev19"
+version = "1.0.0-dev20"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -60,7 +63,7 @@ tasks {
         }
     }
     assemble {
-        dependsOn(reobfJar)
+        dependsOn(shadowJar)
     }
     compileJava {
         options.encoding = "UTF-8"
@@ -70,6 +73,6 @@ tasks {
     }
     shadowJar {
         relocate("crypticlib", "com.github.yufiriamazenta.crypticlib")
-        destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
+//        destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
     }
 }

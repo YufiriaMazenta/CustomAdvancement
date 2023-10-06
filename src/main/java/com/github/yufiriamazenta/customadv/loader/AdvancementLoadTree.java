@@ -1,6 +1,7 @@
-package com.github.yufiriamazenta.customadvancement.loader;
+package com.github.yufiriamazenta.customadv.loader;
 
-import com.github.yufiriamazenta.customadvancement.manager.impl.AdvancementManager;
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
+import com.github.yufiriamazenta.customadv.manager.impl.AdvancementManager;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
 
@@ -53,7 +54,7 @@ public final class AdvancementLoadTree {
 
     void unload() {
         loadNodes.forEach((nodeKey, node) -> {
-            AdvancementManager.INSTANCE.removeAdvancement(nodeKey);
+            CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey).unregister();
         });
     }
 

@@ -1,7 +1,7 @@
-package com.github.yufiriamazenta.customadvancement.cmd.sub;
+package com.github.yufiriamazenta.customadv.cmd.sub;
 
-import com.github.yufiriamazenta.customadvancement.loader.AdvancementLoader;
-import com.github.yufiriamazenta.customadvancement.CustomAdvancement;
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
+import com.github.yufiriamazenta.customadv.loader.AdvancementLoader;
 import crypticlib.command.ISubCommand;
 import crypticlib.util.MsgUtil;
 import org.bukkit.command.CommandSender;
