@@ -12,6 +12,8 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
     private static CustomAdvancement INSTANCE;
     private YamlConfigWrapper langFile;
     private IAdvancementManager advancementManager;
+    private String ADVANCEMENT_NAMESPACE_YAML = getConfig().getString("advancement_namespace_yaml", "custom_advancement");
+    private String ADVANCEMENT_NAMESPACE_JSON = getConfig().getString("advancement_namespace_json", "minecraft");
 
     @Override
     public void enable() {
@@ -64,6 +66,19 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
             case "v1_20_R2" -> V1_20_R2AdvancementManager.INSTANCE;
             default -> throw new UnsupportedOperationException("Unknown version");
         };
+    }
+
+    public void reloadNamespace() {
+        ADVANCEMENT_NAMESPACE_YAML = getConfig().getString("advancement_namespace_yaml", "custom_advancement");
+        ADVANCEMENT_NAMESPACE_JSON = getConfig().getString("advancement_namespace_json", "minecraft");
+    }
+
+    public String getAdvancementNamespaceYaml() {
+        return ADVANCEMENT_NAMESPACE_YAML;
+    }
+
+    public String getAdvancementNamespaceJson() {
+        return ADVANCEMENT_NAMESPACE_JSON;
     }
 
 }

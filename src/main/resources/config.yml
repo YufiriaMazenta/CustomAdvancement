@@ -15,3 +15,5 @@ data:
     minimumIdle: 30000
     maximumPoolSize: 50
     autoCommit: true
+advancement_namespace_json: 'minecraft'
+advancement_namespace_yaml: 'custom_advancement'

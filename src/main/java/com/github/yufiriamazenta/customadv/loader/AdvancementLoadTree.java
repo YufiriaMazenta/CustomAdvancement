@@ -3,6 +3,8 @@ package com.github.yufiriamazenta.customadv.loader;
 import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public final class AdvancementLoadTree {
                 else
                     throw new IllegalArgumentException("Unsupported advancement file type");
                 String parentKey = node.getParentKey();
-                if (parentKey == null || !parentKey.startsWith("custom_advancement:")) {
+                if (parentKey == null || Bukkit.getAdvancement(NamespacedKey.fromString(parentKey)) != null) {
                     loadNodes.put(key, node);
                     removeList.add(key);
                     return;

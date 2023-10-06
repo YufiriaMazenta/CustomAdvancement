@@ -44,13 +44,13 @@ public enum AdvancementLoader {
             switch (file.getPath().substring(file.getPath().lastIndexOf(".") + 1)) {
                 case "json" -> {
                     try {
-                        advancementFiles.put("custom_advancement:" + key, JsonUtil.getGson().fromJson(FileUtils.readFileToString(file, "UTF-8"), JsonObject.class));
+                        advancementFiles.put(CustomAdvancement.getInstance().getAdvancementNamespaceJson() + ":" + key, JsonUtil.getGson().fromJson(FileUtils.readFileToString(file, "UTF-8"), JsonObject.class));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 case "yml", "yaml" -> {
-                    advancementFiles.put("custom_advancement:" + key, new YamlConfigWrapper(file));
+                    advancementFiles.put(CustomAdvancement.getInstance().getAdvancementNamespaceYaml() + ":" + key, new YamlConfigWrapper(file));
                 }
             }
         }

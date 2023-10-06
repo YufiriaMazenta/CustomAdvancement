@@ -20,6 +20,7 @@ public enum ReloadCommand implements ISubCommand {
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
         CustomAdvancement.getInstance().reloadConfig();
+        CustomAdvancement.getInstance().reloadNamespace();
         CustomAdvancement.getInstance().getLangFile().reloadConfig();
         AdvancementLoader.INSTANCE.reloadAdvancements();
         MsgUtil.sendLang(
