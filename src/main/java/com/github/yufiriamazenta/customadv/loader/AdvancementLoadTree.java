@@ -1,11 +1,13 @@
 package com.github.yufiriamazenta.customadv.loader;
 
 import com.github.yufiriamazenta.customadv.CustomAdvancement;
-import com.github.yufiriamazenta.customadv.manager.impl.AdvancementManager;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class AdvancementLoadTree {
     private final Map<String, AdvancementLoadTreeNode> loadNodes;

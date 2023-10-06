@@ -1,16 +1,12 @@
 package com.github.yufiriamazenta.customadv.loader;
 
+import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import com.google.gson.JsonObject;
 import crypticlib.config.impl.YamlConfigWrapper;
-import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.github.yufiriamazenta.customadv.CustomAdvancement;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 
 public final class AdvancementLoadTreeNode {
 

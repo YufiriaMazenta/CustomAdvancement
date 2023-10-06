@@ -61,7 +61,7 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
 
     private void loadAdvancementManager() {
         advancementManager = switch (CustomAdvancement.getInstance().getNmsVersion()) {
-            case "v1_20_R2" -> new V1_20_R2AdvancementManager();
+            case "v1_20_R2" -> V1_20_R2AdvancementManager.INSTANCE;
             default -> throw new UnsupportedOperationException("Unknown version");
         };
     }

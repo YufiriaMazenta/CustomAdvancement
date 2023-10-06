@@ -15,7 +15,6 @@ import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ public class V1_20_R2AdvancementWrapper extends AbstractAdvancementWrapper {
         List<AdvancementHolder> advancementHolders = new ArrayList<>();
         advancementHolders.add(new AdvancementHolder(minecraftKey, advancement));
         advancementTree.a(advancementHolders);
+
         Map<MinecraftKey, AdvancementHolder> advancementHolderMap = new ConcurrentHashMap<>();
         for (AdvancementNode advancementNode : advancementTree.c()) {
             advancementHolderMap.put(advancementNode.b().a(), advancementNode.b());

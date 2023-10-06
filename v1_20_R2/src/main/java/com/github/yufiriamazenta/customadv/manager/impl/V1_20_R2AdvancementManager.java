@@ -15,7 +15,9 @@ import net.minecraft.server.players.PlayerList;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 
-public class V1_20_R2AdvancementManager implements IAdvancementManager {
+public enum V1_20_R2AdvancementManager implements IAdvancementManager {
+
+    INSTANCE;
 
     @Override
     public AbstractAdvancementWrapper advancementWrapper(String key, JsonObject jsonObject) {
