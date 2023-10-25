@@ -33,7 +33,7 @@ dependencies {
     compileOnly("pers.neige.neigeitems:NeigeItems:1.15.19")
     compileOnly("commons-io:commons-io:2.14.0")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.5")
+    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.7")
     implementation(project(":common"))
     implementation(project(":v1_17_R1"))
     implementation(project(":v1_18_R1"))
@@ -46,7 +46,7 @@ dependencies {
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev23"
+version = "1.0.0-dev24"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -78,7 +78,37 @@ tasks {
         destinationDirectory.set(layout.buildDirectory.dir("dev-libs"))
     }
     shadowJar {
-        relocate("crypticlib", "com.github.yufiriamazenta.crypticlib")
+        relocate("crypticlib", "com.github.yufiriamazenta.customadv.crypticlib")
         archiveFileName.set("CustomAdvancement-${version}.jar")
     }
+}
+
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "maven-publish")
+    publishing {
+        publications.create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://oss.sonatype.org/content/groups/public/")
+        maven("https://jitpack.io")
+        maven("https://repo.rosewooddev.io/repository/public/")
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://repo.maven.apache.org/maven2/")
+        maven("https://mvn.lumine.io/repository/maven-public/")
+        maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
+        maven("https://r.irepo.space/maven/")
+        mavenCentral()
+    }
+    tasks {
+        compileJava {
+            options.encoding = "UTF-8"
+        }
+    }
+    java.sourceCompatibility = JavaVersion.VERSION_17
+    java.targetCompatibility = JavaVersion.VERSION_17
 }

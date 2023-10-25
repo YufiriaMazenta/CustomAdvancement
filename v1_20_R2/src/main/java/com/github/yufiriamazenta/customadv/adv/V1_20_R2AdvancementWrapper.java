@@ -43,11 +43,7 @@ public class V1_20_R2AdvancementWrapper extends AbstractAdvancementWrapper {
         advancementHolders.add(new AdvancementHolder(minecraftKey, advancement));
         advancementTree.a(advancementHolders);
 
-        Map<MinecraftKey, AdvancementHolder> advancementHolderMap = new ConcurrentHashMap<>();
-        for (AdvancementNode advancementNode : advancementTree.c()) {
-            advancementHolderMap.put(advancementNode.b().a(), advancementNode.b());
-        }
-        advancementDataWorld.c = advancementHolderMap;
+        reloadAdvancementDataWorld();
 
         AdvancementsCache.getAdvancementWrapperMap().put(getKey(), this);
     }
@@ -59,7 +55,20 @@ public class V1_20_R2AdvancementWrapper extends AbstractAdvancementWrapper {
         AdvancementTree advancementTree = advancementDataWorld.a();
         MinecraftKey minecraftKey = new MinecraftKey(super.getKey());
         advancementTree.a(Set.of(minecraftKey));
+
+        reloadAdvancementDataWorld();
         AdvancementsCache.getAdvancementWrapperMap().remove(getKey());
+    }
+
+    private void reloadAdvancementDataWorld() {
+        MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
+        AdvancementDataWorld advancementDataWorld = minecraftServer.az();
+        AdvancementTree advancementTree = advancementDataWorld.a();
+        Map<MinecraftKey, AdvancementHolder> advancementHolderMap = new ConcurrentHashMap<>();
+        for (AdvancementNode advancementNode : advancementTree.c()) {
+            advancementHolderMap.put(advancementNode.b().a(), advancementNode.b());
+        }
+        advancementDataWorld.c = advancementHolderMap;
     }
 
     @Override
