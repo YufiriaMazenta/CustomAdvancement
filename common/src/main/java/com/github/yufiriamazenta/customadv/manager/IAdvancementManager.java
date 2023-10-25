@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import crypticlib.item.Item;
+import crypticlib.item.ItemManager;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
 import crypticlib.util.YamlConfigUtil;
@@ -33,7 +34,7 @@ public interface IAdvancementManager {
         String item = config.getString("display.icon", "stone");
         ItemStack itemStack = ItemUtils.matchItem(item);
         if (itemStack.hasItemMeta()) {
-            iconJson.addProperty("nbt", Item.fromBukkitItem(itemStack).getNbtTag().toJsonStr());
+            iconJson.addProperty("nbt", ItemManager.item(itemStack).nbtCompound().toJson().toString());
         }
         iconJson.addProperty("item", itemStack.getType().getKey().toString());
         displayJson.add("icon", iconJson);

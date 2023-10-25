@@ -23,14 +23,6 @@ repositories {
 
 dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
-    compileOnly("org.black_ixx:playerpoints:3.2.5")
-    compileOnly("net.luckperms:api:5.4")
-    compileOnly("me.clip:placeholderapi:2.11.1")
-    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.5.0b")
-    compileOnly("com.github.oraxen:oraxen:1.160.0")
-    compileOnly("io.lumine:Mythic-Dist:5.3.5")
-    compileOnly("pers.neige.neigeitems:NeigeItems:1.15.19")
     compileOnly("commons-io:commons-io:2.14.0")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.7")
@@ -46,7 +38,7 @@ dependencies {
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev24"
+version = "1.0.0-dev25"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -103,6 +95,12 @@ subprojects {
         maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
         maven("https://r.irepo.space/maven/")
         mavenCentral()
+    }
+    dependencies {
+        compileOnly("org.jetbrains:annotations:24.0.1")
+        compileOnly("com.github.YufiriaMazenta:CrypticLib:1.0.7")
+        compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+        compileOnly("com.google.code.gson:gson:2.10.1")
     }
     tasks {
         compileJava {
