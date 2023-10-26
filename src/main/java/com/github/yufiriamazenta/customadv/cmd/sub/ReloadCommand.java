@@ -25,7 +25,7 @@ public enum ReloadCommand implements ISubCommand {
         AdvancementLoader.INSTANCE.reloadAdvancements();
         MsgUtil.sendLang(
                 sender,
-                CustomAdvancement.getInstance().getLangFile().getConfig(),
+                CustomAdvancement.getInstance().getLangFile().config(),
                 "command.reload_success",
                 Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
         return true;

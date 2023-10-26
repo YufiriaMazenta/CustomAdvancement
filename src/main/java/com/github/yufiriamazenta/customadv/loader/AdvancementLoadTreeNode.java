@@ -41,7 +41,7 @@ public final class AdvancementLoadTreeNode {
     public void load() {
         try {
             if (advancementConfig != null && advancementJson == null) {
-                CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey, advancementConfig.getConfig()).register();
+                CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey, advancementConfig.config()).register();
             }
             else if (advancementJson != null && advancementConfig == null) {
                 CustomAdvancement.getInstance().getAdvancementManager().advancementWrapper(nodeKey, advancementJson).register();
@@ -69,7 +69,7 @@ public final class AdvancementLoadTreeNode {
 
     public String getParentKey() {
         if (advancementConfig != null && advancementJson == null)
-            return advancementConfig.getConfig().getString("parent");
+            return advancementConfig.config().getString("parent");
         else if (advancementJson != null && advancementConfig == null)
             if (advancementJson.has("parent"))
                 return advancementJson.get("parent").getAsString();

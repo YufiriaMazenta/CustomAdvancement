@@ -24,7 +24,7 @@ public enum RevokeCommand implements ISubCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
-        YamlConfiguration langConfig = CustomAdvancement.getInstance().getLangFile().getConfig();
+        YamlConfiguration langConfig = CustomAdvancement.getInstance().getLangFile().config();
         if (args.size() < 2) {
             MsgUtil.sendLang(sender, langConfig, "command.missing_parameters", Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
             return true;

@@ -47,7 +47,7 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
     }
 
     public String getPrefix() {
-        return langFile.getConfig().getString("prefix", "&8[&3Custom&bAdvancement&8]&r");
+        return langFile.config().getString("prefix", "&8[&3Custom&bAdvancement&8]&r");
     }
 
     public IAdvancementManager getAdvancementManager() {
@@ -63,7 +63,7 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
     }
 
     private void loadAdvancementManager() {
-        advancementManager = switch (CrypticLib.getNmsVersion()) {
+        advancementManager = switch (CrypticLib.nmsVersion()) {
             case "v1_18_R1" -> V1_17_R1AdvancementManager.INSTANCE;
             case "v1_18_R2" -> V1_18_R2AdvancementManager.INSTANCE;
             case "v1_19_R1" -> V1_19_R1AdvancementManager.INSTANCE;

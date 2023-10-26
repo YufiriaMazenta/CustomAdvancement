@@ -25,7 +25,7 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly("commons-io:commons-io:2.14.0")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.7")
+    implementation("com.github.YufiriaMazenta:CrypticLib:1.0.8")
     implementation(project(":common"))
     implementation(project(":v1_17_R1"))
     implementation(project(":v1_18_R1"))
@@ -38,7 +38,7 @@ dependencies {
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev25"
+version = "1.0.0-dev26"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -98,7 +98,7 @@ subprojects {
     }
     dependencies {
         compileOnly("org.jetbrains:annotations:24.0.1")
-        compileOnly("com.github.YufiriaMazenta:CrypticLib:1.0.7")
+        compileOnly("com.github.YufiriaMazenta:CrypticLib:1.0.8")
         compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
         compileOnly("com.google.code.gson:gson:2.10.1")
     }

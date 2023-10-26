@@ -34,7 +34,7 @@ public enum AdvancementLoader {
             if (!mkdirResult)
                 return;
         }
-        List<File> files = FileUtil.getAllFiles(advancementsFolder, Pattern.compile("(.yml|.yaml|.json)$"));
+        List<File> files = FileUtil.allFiles(advancementsFolder, Pattern.compile("(.yml|.yaml|.json)$"));
         if (files.size() < 1) {
             CustomAdvancement.getInstance().saveResource("advancements/example.yml", false);
             files.add(new File(advancementsFolder, "example.yml"));
