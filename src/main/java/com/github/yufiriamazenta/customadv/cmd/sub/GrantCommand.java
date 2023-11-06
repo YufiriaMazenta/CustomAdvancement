@@ -43,20 +43,17 @@ public enum GrantCommand implements ISubCommand {
     }
 
     @Override
-    public String getSubCommandName() {
+    public String subCommandName() {
         return "grant";
     }
 
     @Override
-    public String getPerm() {
+    public String perm() {
         return "custom_advancement.command.grant";
     }
 
     @Override
-    public void setPerm(String perm) {}
-
-    @Override
-    public @NotNull Map<String, ISubCommand> getSubCommands() {
+    public @NotNull Map<String, ISubCommand> subCommands() {
         return subCommandMap;
     }
 

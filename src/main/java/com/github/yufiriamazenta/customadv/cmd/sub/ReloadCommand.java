@@ -32,20 +32,17 @@ public enum ReloadCommand implements ISubCommand {
     }
 
     @Override
-    public String getSubCommandName() {
+    public String subCommandName() {
         return "reload";
     }
 
     @Override
-    public String getPerm() {
+    public String perm() {
         return "custom_advancement.command.reload";
     }
 
     @Override
-    public void setPerm(String perm) {}
-
-    @Override
-    public @NotNull Map<String, ISubCommand> getSubCommands() {
+    public @NotNull Map<String, ISubCommand> subCommands() {
         return subCommandMap;
     }
 

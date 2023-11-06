@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@BukkitCommand(command = "customadvancement")
+@BukkitCommand(name = "customadvancement", alias = {"ca", "cadv"}, perm = "custom_advancement.command")
 public class CustomAdvancementCmd implements IPluginCommand {
 
     private final Map<String, ISubCommand> subCommandMap;
@@ -31,7 +31,7 @@ public class CustomAdvancementCmd implements IPluginCommand {
     }
 
     @Override
-    public @NotNull Map<String, ISubCommand> getSubCommands() {
+    public @NotNull Map<String, ISubCommand> subCommands() {
         return subCommandMap;
     }
 
