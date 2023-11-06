@@ -6,12 +6,6 @@ load: POSTWORLD
 authors: [ YufiriaMazenta ]
 soft-depends: [ ItemsAdder, Oraxen, MythicMobs, NeigeItems ]
 folia-supported: true
-commands:
-  customadvancement:
-    aliases:
-      - customadv
-      - cadv
-    permission: custom_advancement.command
 permissions:
   custom_advancement.command:
     default: op
