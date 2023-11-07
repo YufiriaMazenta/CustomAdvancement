@@ -3,7 +3,7 @@ package com.github.yufiriamazenta.customadv.cmd.sub;
 
 import com.github.yufiriamazenta.customadv.AdvancementsCache;
 import com.github.yufiriamazenta.customadv.CustomAdvancement;
-import crypticlib.command.ISubCommand;
+import crypticlib.command.ISubCmdExecutor;
 import crypticlib.util.MsgUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum RevokeCommand implements ISubCommand {
+public enum RevokeCommand implements ISubCmdExecutor {
 
     INSTANCE;
-    private final Map<String, ISubCommand> subCommandMap = new ConcurrentHashMap<>();
+    private final Map<String, ISubCmdExecutor> subCommandMap = new ConcurrentHashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
@@ -49,12 +49,12 @@ public enum RevokeCommand implements ISubCommand {
     }
 
     @Override
-    public String perm() {
+    public String permission() {
         return "custom_advancement.command.revoke";
     }
 
     @Override
-    public @NotNull Map<String, ISubCommand> subCommands() {
+    public @NotNull Map<String, ISubCmdExecutor> subCommands() {
         return subCommandMap;
     }
 

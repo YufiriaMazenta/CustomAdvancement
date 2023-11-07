@@ -2,7 +2,7 @@ package com.github.yufiriamazenta.customadv.cmd.sub;
 
 import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import com.github.yufiriamazenta.customadv.loader.AdvancementLoader;
-import crypticlib.command.ISubCommand;
+import crypticlib.command.ISubCmdExecutor;
 import crypticlib.util.MsgUtil;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum ReloadCommand implements ISubCommand {
+public enum ReloadCommand implements ISubCmdExecutor {
 
     INSTANCE;
 
-    private final Map<String, ISubCommand> subCommandMap = new ConcurrentHashMap<>();
+    private final Map<String, ISubCmdExecutor> subCommandMap = new ConcurrentHashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
@@ -37,12 +37,12 @@ public enum ReloadCommand implements ISubCommand {
     }
 
     @Override
-    public String perm() {
+    public String permission() {
         return "custom_advancement.command.reload";
     }
 
     @Override
-    public @NotNull Map<String, ISubCommand> subCommands() {
+    public @NotNull Map<String, ISubCmdExecutor> subCommands() {
         return subCommandMap;
     }
 
