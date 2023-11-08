@@ -11,6 +11,9 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
+    maven("http://repo.crypticlib.com:8081/repository/maven-public/") {
+        isAllowInsecureProtocol = true
+    }
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.maven.apache.org/maven2/")
@@ -38,7 +41,7 @@ dependencies {
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev30"
+version = "1.0.0-dev28"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
@@ -87,6 +90,9 @@ subprojects {
         mavenLocal()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://oss.sonatype.org/content/groups/public/")
+        maven("http://repo.crypticlib.com:8081/repository/maven-public/") {
+            isAllowInsecureProtocol = true
+        }
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
