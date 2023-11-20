@@ -6,9 +6,10 @@ import com.github.yufiriamazenta.customadv.util.ItemUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import crypticlib.nms.item.ItemManager;
+import crypticlib.nms.item.ItemFactory;
 import crypticlib.util.JsonUtil;
 import crypticlib.util.MsgUtil;
+import crypticlib.util.TextUtil;
 import crypticlib.util.YamlConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -33,12 +34,12 @@ public interface IAdvancementManager {
         String item = config.getString("display.icon", "stone");
         ItemStack itemStack = ItemUtils.matchItem(item);
         if (itemStack.hasItemMeta()) {
-            iconJson.addProperty("nbt", ItemManager.item(itemStack).nbtCompound().toJson().toString());
+            iconJson.addProperty("nbt", ItemFactory.item(itemStack).nbtTagCompound().toJson().toString());
         }
         iconJson.addProperty("item", itemStack.getType().getKey().toString());
         displayJson.add("icon", iconJson);
-        displayJson.addProperty("title", MsgUtil.color(config.getString("display.title", "Unset title")));
-        displayJson.addProperty("description", MsgUtil.color(config.getString("display.description", "Unset description")));
+        displayJson.addProperty("title", TextUtil.color(config.getString("display.title", "Unset title")));
+        displayJson.addProperty("description", TextUtil.color(config.getString("display.description", "Unset description")));
         displayJson.addProperty("hidden", config.getBoolean("display.hidden", false));
         displayJson.addProperty("frame", config.getString("display.frame", "task"));
         if (config.getString("display.background") != null)
@@ -63,7 +64,7 @@ public interface IAdvancementManager {
 
         //需要完成的准则列表
         List<?> requirements = config.getList("requirements");
-        if (requirements != null && requirements.size() >= 1) {
+        if (requirements != null && !requirements.isEmpty()) {
             JsonArray requirementsJsonArr = gson.fromJson(gson.toJson(YamlConfigUtil.configList2List(requirements)), JsonArray.class);
             rootJson.add("requirements", requirementsJsonArr);
         }
@@ -75,14 +76,14 @@ public interface IAdvancementManager {
             if (rewards.getDouble("exp", 0) != 0) {
                 rewardsJson.addProperty("experience", rewards.getDouble("exp"));
             }
-            if (rewards.getStringList("loot").size() >= 1) {
+            if (!rewards.getStringList("loot").isEmpty()) {
                 JsonArray loot = new JsonArray();
                 for (String lootName : rewards.getStringList("loot")) {
                     loot.add(lootName);
                 }
                 rewardsJson.add("loot", loot);
             }
-            if (rewards.getStringList("recipes").size() >= 1) {
+            if (!rewards.getStringList("recipes").isEmpty()) {
                 JsonArray recipes = new JsonArray();
                 for (String recipeName : rewards.getStringList("recipes")) {
                     recipes.add(recipeName);

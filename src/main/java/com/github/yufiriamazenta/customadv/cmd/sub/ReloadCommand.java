@@ -2,20 +2,24 @@ package com.github.yufiriamazenta.customadv.cmd.sub;
 
 import com.github.yufiriamazenta.customadv.CustomAdvancement;
 import com.github.yufiriamazenta.customadv.loader.AdvancementLoader;
-import crypticlib.command.ISubCmdExecutor;
+import crypticlib.command.api.ISubcmdExecutor;
+import crypticlib.command.impl.SubcmdExecutor;
 import crypticlib.util.MsgUtil;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum ReloadCommand implements ISubCmdExecutor {
+public class ReloadCommand extends SubcmdExecutor {
 
-    INSTANCE;
+    public static final ReloadCommand INSTANCE = new ReloadCommand();
 
-    private final Map<String, ISubCmdExecutor> subCommandMap = new ConcurrentHashMap<>();
+    private final Map<String, ISubcmdExecutor> subCommandMap = new ConcurrentHashMap<>();
+
+    public ReloadCommand() {
+        super("reload", "custom_advancement.command.reload");
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, List<String> args) {
@@ -23,27 +27,11 @@ public enum ReloadCommand implements ISubCmdExecutor {
         CustomAdvancement.getInstance().reloadNamespace();
         CustomAdvancement.getInstance().getLangFile().reloadConfig();
         AdvancementLoader.INSTANCE.reloadAdvancements();
-        MsgUtil.sendLang(
+        MsgUtil.sendMsg(
                 sender,
-                CustomAdvancement.getInstance().getLangFile().config(),
-                "command.reload_success",
+                CustomAdvancement.getInstance().getLangFile().config().getString("command.reload_success", "command.reload_success"),
                 Map.of("%prefix%", CustomAdvancement.getInstance().getPrefix()));
         return true;
-    }
-
-    @Override
-    public String subCommandName() {
-        return "reload";
-    }
-
-    @Override
-    public String permission() {
-        return "custom_advancement.command.reload";
-    }
-
-    @Override
-    public @NotNull Map<String, ISubCmdExecutor> subCommands() {
-        return subCommandMap;
     }
 
 }

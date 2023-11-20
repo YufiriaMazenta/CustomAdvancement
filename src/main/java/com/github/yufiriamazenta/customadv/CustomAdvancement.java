@@ -1,12 +1,19 @@
 package com.github.yufiriamazenta.customadv;
 
+import com.github.yufiriamazenta.customadv.cmd.sub.GrantCommand;
+import com.github.yufiriamazenta.customadv.cmd.sub.ReloadCommand;
+import com.github.yufiriamazenta.customadv.cmd.sub.RevokeCommand;
 import com.github.yufiriamazenta.customadv.loader.AdvancementLoader;
 import com.github.yufiriamazenta.customadv.manager.IAdvancementManager;
 import com.github.yufiriamazenta.customadv.manager.impl.*;
 import crypticlib.BukkitPlugin;
 import crypticlib.CrypticLib;
+import crypticlib.command.api.CommandInfo;
+import crypticlib.command.impl.RootCmdExecutor;
 import crypticlib.config.impl.YamlConfigWrapper;
 import org.bukkit.event.Listener;
+
+import static crypticlib.command.CommandManager.subcommand;
 
 public final class CustomAdvancement extends BukkitPlugin implements Listener {
 
@@ -23,6 +30,15 @@ public final class CustomAdvancement extends BukkitPlugin implements Listener {
         loadLangFile();
         loadAdvancementManager();
         loadAdvancements();
+        loadCommands();
+    }
+
+    private void loadCommands() {
+        new RootCmdExecutor()
+            .regSub(GrantCommand.INSTANCE)
+            .regSub(ReloadCommand.INSTANCE)
+            .regSub(RevokeCommand.INSTANCE)
+            .register(this, new CommandInfo("customadvancement","custom_advancement.command", new String[]{"ca", "cadv"}));
     }
 
     @Override
