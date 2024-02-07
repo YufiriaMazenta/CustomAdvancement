@@ -38,10 +38,11 @@ dependencies {
     implementation(project(":v1_19_R3"))
     implementation(project(":v1_20_R1"))
     implementation(project(":v1_20_R2"))
+    implementation(project(":v1_20_R3"))
 }
 
 group = "com.github.yufiriamazenta"
-version = "1.0.0-dev31"
+version = "1.0.0-dev32"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
