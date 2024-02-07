@@ -39,7 +39,8 @@ public class V1_20_R3AdvancementWrapper extends AbstractAdvancementWrapper {
         AdvancementTree advancementTree = advancementDataWorld.a();
         LootDataManager lootDataManager = minecraftServer.aJ();
         MinecraftKey minecraftKey = new MinecraftKey(super.getKey());
-        Advancement advancement = SystemUtils.a(Advancement.a)
+        com.mojang.serialization.Codec<Advancement> a = Advancement.a;
+        Advancement advancement = SystemUtils.a(a)
         Advancement.b(super.getAdvancementJson(), new LootDeserializationContext(minecraftKey, lootDataManager));
         List<AdvancementHolder> advancementHolders = new ArrayList<>();
         advancementHolders.add(new AdvancementHolder(minecraftKey, advancement));

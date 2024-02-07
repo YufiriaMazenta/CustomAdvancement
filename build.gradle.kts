@@ -4,6 +4,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow").version("7.1.2")
+    id("io.papermc.paperweight.userdev") version "1.5.11"
 }
 
 repositories {
@@ -28,6 +29,7 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly("commons-io:commons-io:2.14.0")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     implementation("com.crypticlib:CrypticLib:0.2.2")
     implementation(project(":common"))
     implementation(project(":v1_17_R1"))
